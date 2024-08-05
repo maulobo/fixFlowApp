@@ -1,9 +1,7 @@
 'use client';
 
-import * as React from 'react';
 import { TrendingUp } from 'lucide-react';
 import { Label, Pie, PieChart } from 'recharts';
-
 import {
   Card,
   CardContent,
@@ -18,44 +16,86 @@ import {
   ChartTooltip,
   ChartTooltipContent
 } from '@/components/ui/chart';
-const chartData = [
-  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
-  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
-  { browser: 'firefox', visitors: 287, fill: 'var(--color-firefox)' },
-  { browser: 'edge', visitors: 173, fill: 'var(--color-edge)' },
-  { browser: 'other', visitors: 190, fill: 'var(--color-other)' }
-];
+import { useEffect, useMemo, useState } from 'react';
 
-const chartConfig = {
+interface ChartDataType {
+  browser: string;
+  visitors: number;
+  fill: string;
+}
+
+const colors: { [key: string]: string } = {
+  led: 'var(--color-chrome)',
+  pared: 'var(--color-safari)',
+  techo: 'green',
+  other: 'var(--color-other)'
+};
+
+const chartConfig: ChartConfig = {
   visitors: {
     label: 'Visitors'
   },
-  chrome: {
-    label: 'Chrome',
+  led: {
+    label: 'led',
     color: 'hsl(var(--chart-1))'
   },
-  safari: {
-    label: 'Safari',
+  pared: {
+    label: 'Pared',
     color: 'hsl(var(--chart-2))'
   },
-  firefox: {
-    label: 'Firefox',
+  techo: {
+    label: 'Techo',
     color: 'hsl(var(--chart-3))'
-  },
-  edge: {
-    label: 'Edge',
-    color: 'hsl(var(--chart-4))'
   },
   other: {
     label: 'Other',
     color: 'hsl(var(--chart-5))'
   }
-} satisfies ChartConfig;
+};
 
 export function PieGraph() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
+  const [data, setData] = useState<ChartDataType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let baseUrl = 'http://localhost:5001';
+      try {
+        const response = await fetch(`${baseUrl}/chart-data`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+
+        const updatedData: ChartDataType[] = Object.keys(result).map((key) => ({
+          browser: key,
+          visitors: result[key],
+          fill: colors[key] || colors.other
+        }));
+
+        setData(updatedData);
+      } catch (error) {
+        setError((error as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
+
+  const totalVisitors = useMemo(() => {
+    return data.reduce((acc, curr) => acc + curr.visitors, 0);
+  }, [data]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <Card className="flex flex-col">
@@ -74,7 +114,7 @@ export function PieGraph() {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={chartData}
+              data={data}
               dataKey="visitors"
               nameKey="browser"
               innerRadius={60}
@@ -102,11 +142,12 @@ export function PieGraph() {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          Total Products
                         </tspan>
                       </text>
                     );
                   }
+                  return null;
                 }}
               />
             </Pie>

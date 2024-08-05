@@ -13,8 +13,12 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { fetchData } from '@/lib/fetchData';
+import { ChartData } from '@/types/types-mine';
 
-export default function page() {
+export default async function page() {
+  const data: ChartData = await fetchData();
+
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-2">
@@ -39,7 +43,7 @@ export default function page() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Total Revenue
+                    Productos Totales
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +59,7 @@ export default function page() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">$45,231.89</div>
+                  <div className="text-2xl font-bold">{data.totalProducts}</div>
                   <p className="text-xs text-muted-foreground">
                     +20.1% from last month
                   </p>
@@ -64,7 +68,7 @@ export default function page() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Subscriptions
+                    Productos Destacados
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +86,9 @@ export default function page() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">+2350</div>
+                  <div className="text-2xl font-bold">
+                    {data.featuredProducts}
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     +180.1% from last month
                   </p>
@@ -144,13 +150,13 @@ export default function page() {
               </div>
               <Card className="col-span-4 md:col-span-3">
                 <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
+                  <CardTitle>Recent Added</CardTitle>
                   <CardDescription>
-                    You made 265 sales this month.
+                    {`You add {TOTALADDED} products`}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <RecentSales />
+                  <RecentSales added={data.lastFiveProducts} />
                 </CardContent>
               </Card>
               <div className="col-span-4">
