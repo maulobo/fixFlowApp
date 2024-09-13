@@ -1,3 +1,6 @@
+import Block from '@/components/block/block';
+import BlockMonthlyChart from '@/components/block/block-monthly-chart';
+import BlockAdd from '@/components/block/blockAdd';
 import { AreaGraph } from '@/components/charts/area-graph';
 import { BarGraph } from '@/components/charts/bar-graph';
 import { PieGraph } from '@/components/charts/pie-graph';
@@ -14,10 +17,26 @@ import {
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fetchData } from '@/lib/fetchData';
-import { ChartData } from '@/types/types-mine';
+import { ChartData, ChartDataMonth } from '@/types/types-mine';
+const months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
+];
 
 export default async function page() {
-  const data: ChartData = await fetchData();
+  const data: ChartData = await fetchData(`complaints`);
+
+  console.log(data.complainedByMonth);
 
   return (
     <PageContainer scrollable={true}>
@@ -43,7 +62,7 @@ export default async function page() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Productos Totales
+                    Reclamos Totales
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +78,11 @@ export default async function page() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{data.totalProducts}</div>
+                  <div className="text-2xl font-bold">
+                    {data.recentComplaints
+                      ? data.recentComplaints.length
+                      : 'No data'}
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     +20.1% from last month
                   </p>
@@ -68,7 +91,7 @@ export default async function page() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Productos Destacados
+                    Reclamos Resueltos
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -87,41 +110,19 @@ export default async function page() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {data.featuredProducts}
+                    {data.recentComplaints
+                      ? data.resolvedComplaints.length
+                      : 'No data'}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    +180.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Sales</CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <rect width="20" height="14" x="2" y="5" rx="2" />
-                    <path d="M2 10h20" />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">+12,234</div>
-                  <p className="text-xs text-muted-foreground">
-                    +19% from last month
+                    Maso alg asiu mi rey
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Active Now
+                    Errores Humanos
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -137,33 +138,42 @@ export default async function page() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">+573</div>
-                  <p className="text-xs text-muted-foreground">
-                    +201 since last hour
-                  </p>
+                  <div className="text-2xl font-bold">
+                    {data.recentComplaints ? data.humanErrors : 'No data'}
+                  </div>
+                  <p className="text-xs text-muted-foreground">Huamintosss</p>
                 </CardContent>
               </Card>
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <div className="col-span-4">
-                <BarGraph />
-              </div>
-              <Card className="col-span-4 md:col-span-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
+              {/* <Card className="col-span-4 md:col-span-3">
                 <CardHeader>
                   <CardTitle>Recent Added</CardTitle>
                   <CardDescription>
-                    {`You add {TOTALADDED} products`}
+                    {data.pendingComplaints
+                      ? `You add ${data.pendingComplaints.length} products`
+                      : ''}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <RecentSales added={data.lastFiveProducts} />
+                  {data.pendingComplaints ? (
+                    <RecentSales added={data.pendingComplaints} />
+                  ) : (
+                    'No data'
+                  )}
                 </CardContent>
-              </Card>
-              <div className="col-span-4">
-                <AreaGraph />
+              </Card> */}
+              <div className="col-span-4 md:col-span-4">
+                <BlockMonthlyChart />
               </div>
-              <div className="col-span-4 md:col-span-3">
-                <PieGraph />
+              <div className="col-span-4 md:col-span-2">
+                {data.recentComplaints ? (
+                  <PieGraph
+                    mostComplainedProducts={data.mostComplainedProducts}
+                  />
+                ) : (
+                  'No data'
+                )}
               </div>
             </div>
           </TabsContent>

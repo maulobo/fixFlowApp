@@ -4,7 +4,7 @@ import { UploadDropzone } from '@uploadthing/react';
 import { Trash } from 'lucide-react';
 import Image from 'next/image';
 import { UploadFileResponse } from 'uploadthing/client';
-import { IMG_MAX_LIMIT } from './forms/product-form';
+import { IMG_MAX_LIMIT } from './forms/complaint-form';
 import { Button } from './ui/button';
 import { useToast } from './ui/use-toast';
 
@@ -62,10 +62,10 @@ export default function FileUpload({
         {value.length < IMG_MAX_LIMIT && (
           <UploadDropzone<OurFileRouter>
             className="ut-label:text-sm ut-allowed-content:ut-uploading:text-red-300 py-2 dark:bg-zinc-800"
-            endpoint="imageUploader"
+            endpoint="cloudinaryUploader"
             config={{ mode: 'auto' }}
             content={{
-              allowedContent({ isUploading }) {
+              allowedContent({ isUploading }: any) {
                 if (isUploading)
                   return (
                     <>
@@ -76,7 +76,7 @@ export default function FileUpload({
                   );
               }
             }}
-            onClientUploadComplete={(res) => {
+            onClientUploadComplete={(res: any) => {
               // Do something with the response
               const data: UploadFileResponse[] | undefined = res;
               if (data) {

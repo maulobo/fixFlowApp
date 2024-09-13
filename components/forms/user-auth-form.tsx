@@ -11,35 +11,103 @@ import {
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import GoogleSignInButton from '../github-auth-button';
+import Link from 'next/link';
+import { URL } from '@/constants/data';
+import { useToast } from '../ui/use-toast';
 
-const formSchema = z.object({
-  email: z.string().email({ message: 'Enter a valid email address' })
+// Define schema for sign in
+const signInSchema = z.object({
+  email: z.string().email({ message: 'Enter a valid email address' }),
+  password: z
+    .string()
+    .min(8, { message: 'Password must be at least 8 characters long' })
+    .regex(/[A-Z]/, {
+      message: 'Password must contain at least one uppercase letter'
+    })
+    .regex(/[0-9]/, { message: 'Password must contain at least one number' })
 });
 
-type UserFormValue = z.infer<typeof formSchema>;
+// Define schema for sign up
+const signUpSchema = signInSchema.extend({
+  name: z.string().min(1, { message: 'Name is required' }) // Add name field for sign up
+});
 
-export default function UserAuthForm() {
+type UserFormValue =
+  | z.infer<typeof signInSchema>
+  | z.infer<typeof signUpSchema>;
+
+interface UserAuthFormProps {
+  isSignup?: boolean; // Prop to differentiate between sign up and sign in
+}
+
+export default function UserAuthForm({ isSignup }: UserAuthFormProps) {
+  const { toast } = useToast();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
   const [loading, setLoading] = useState(false);
-  const defaultValues = {
-    email: 'demo@gmail.com'
-  };
+
   const form = useForm<UserFormValue>({
-    resolver: zodResolver(formSchema),
-    defaultValues
+    resolver: zodResolver(isSignup ? signUpSchema : signInSchema),
+    defaultValues: {
+      email: '', // Define initial value to ensure controlled input
+      password: '', // Define initial value to ensure controlled input
+      ...(isSignup && { name: '' }) // Ensure 'name' has an initial value if in sign-up mode
+    }
   });
 
   const onSubmit = async (data: UserFormValue) => {
-    signIn('credentials', {
-      email: data.email,
-      callbackUrl: callbackUrl ?? '/dashboard'
-    });
+    setLoading(true);
+
+    if (isSignup) {
+      // Handle sign up logic here
+      try {
+        const response = await fetch(`${URL}/api/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error('Registration failed');
+        }
+
+        const result = await response.json();
+
+        if (response.ok) {
+          toast({
+            variant: 'success',
+            title: 'Account Created',
+            description: 'Please check your email to verify your account.'
+          });
+          setTimeout(() => {
+            router.push('/');
+          }, 2000);
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: result.error || 'An error occurred. Please try again.'
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+      // Example: await registerUser(data);
+    } else {
+      await signIn('credentials', {
+        email: data.email as string,
+        password: data.password as string,
+        callbackUrl: callbackUrl ?? '/dashboard'
+      });
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -49,6 +117,26 @@ export default function UserAuthForm() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full space-y-2"
         >
+          {isSignup && (
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter your name"
+                      disabled={loading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <FormField
             control={form.control}
             name="email"
@@ -61,6 +149,26 @@ export default function UserAuthForm() {
                     placeholder="Enter your email..."
                     disabled={loading}
                     {...field}
+                    autoComplete="your-email"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Enter your password"
+                    disabled={loading}
+                    {...field}
+                    autoComplete="current-password"
                   />
                 </FormControl>
                 <FormMessage />
@@ -69,7 +177,7 @@ export default function UserAuthForm() {
           />
 
           <Button disabled={loading} className="ml-auto w-full" type="submit">
-            Continue With Email
+            {isSignup ? 'Sign Up' : 'Sign In'}
           </Button>
         </form>
       </Form>
@@ -84,6 +192,26 @@ export default function UserAuthForm() {
         </div>
       </div>
       <GoogleSignInButton />
+      {!isSignup && (
+        <div className="mt-4 text-center">
+          <p className="text-sm text-muted-foreground">
+            Dont have an account?{' '}
+            <Link href="/signup" className="text-primary underline">
+              Sign Up
+            </Link>
+          </p>
+        </div>
+      )}
+      {isSignup && (
+        <div className="mt-4 text-center">
+          <p className="text-sm text-muted-foreground">
+            Already have an account?{' '}
+            <Link href="/" className="text-primary underline">
+              Sign In
+            </Link>
+          </p>
+        </div>
+      )}
     </>
   );
 }

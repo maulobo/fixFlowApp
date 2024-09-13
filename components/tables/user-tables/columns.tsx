@@ -3,8 +3,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
 import { User } from '@/constants/data';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Complaint } from '@/types/types-mine';
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Complaint>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -25,20 +26,32 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'name',
-    header: 'NAME'
+    accessorKey: 'orderNumber',
+    header: 'N ORDEN'
   },
   {
-    accessorKey: 'company',
-    header: 'COMPANY'
+    accessorKey: 'product',
+    header: 'PRODUCTO'
   },
   {
-    accessorKey: 'role',
-    header: 'ROLE'
+    accessorKey: 'claimReasons',
+    header: 'TIPO DE ERROR'
   },
   {
     accessorKey: 'status',
     header: 'STATUS'
+  },
+  {
+    accessorKey: 'solutionType',
+    header: 'SOLUCION'
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'FECHA CREACION'
+  },
+  {
+    accessorKey: 'trackingCode',
+    header: 'TRACKING CODE'
   },
   {
     id: 'actions',

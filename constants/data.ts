@@ -1,4 +1,6 @@
+import { fetchData } from '@/lib/fetchData';
 import { NavItem } from '@/types';
+import { ChartData, Complaint } from '@/types/types-mine';
 
 export type User = {
   id: number;
@@ -110,6 +112,9 @@ export type Employee = {
   profile_picture?: string | null; // Profile picture can be a string (URL) or null (if no picture)
 };
 
+export const BASE_URL = 'http://localhost:5001';
+export const URL = `http://localhost:3000`;
+
 export const navItems: NavItem[] = [
   {
     title: 'Dashboard',
@@ -118,15 +123,22 @@ export const navItems: NavItem[] = [
     label: 'Dashboard'
   },
   {
-    title: 'User',
-    href: '/dashboard/user',
-    icon: 'user',
-    label: 'user'
+    title: 'Reclamo',
+    href: '/dashboard/reclamo/new',
+    icon: 'page',
+    label: 'products'
   },
   {
-    title: 'Employee',
-    href: '/dashboard/employee',
-    icon: 'employee',
+    title: 'Pendientes',
+    href: '/dashboard/pendientes',
+    icon: 'pizza',
+    label: 'employee',
+    badge: 1
+  },
+  {
+    title: 'Reportes',
+    href: '/dashboard/reportes',
+    icon: 'post',
     label: 'employee'
   },
   {
@@ -146,5 +158,73 @@ export const navItems: NavItem[] = [
     href: '/',
     icon: 'login',
     label: 'login'
+  },
+  {
+    title: 'Avanzado',
+    href: '/dashboard/settings',
+    icon: 'settings',
+    label: 'login'
   }
 ];
+
+export const updateNavItemsWithPendingCount = async () => {
+  try {
+    const data: ChartData = await fetchData('complaints');
+    const num = data.pendingComplaints.length;
+
+    return [
+      {
+        title: 'Dashboard',
+        href: '/dashboard',
+        icon: 'dashboard',
+        label: 'Dashboard'
+      },
+      {
+        title: 'Reclamo',
+        href: '/dashboard/reclamo/new',
+        icon: 'page',
+        label: 'products'
+      },
+      {
+        title: 'Pendientes',
+        href: '/dashboard/reclamo',
+        icon: 'pizza',
+        label: 'employee',
+        badge: num
+      },
+      {
+        title: 'Reportes',
+        href: '/dashboard/reportes',
+        icon: 'post',
+        label: 'employee'
+      },
+      {
+        title: 'Profile',
+        href: '/dashboard/profile',
+        icon: 'profile',
+        label: 'profile'
+      },
+      {
+        title: 'Kanban',
+        href: '/dashboard/kanban',
+        icon: 'kanban',
+        label: 'kanban'
+      },
+      {
+        title: 'Login',
+        href: '/',
+        icon: 'login',
+        label: 'login'
+      },
+      {
+        title: 'Avanzado',
+        href: '/dashboard/settings',
+        icon: 'settings',
+        label: 'login'
+      }
+    ];
+  } catch (error) {
+    console.error('Error fetching pending complaints count:', error);
+    return []; // Return an empty array if error occurs
+  }
+};

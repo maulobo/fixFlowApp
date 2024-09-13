@@ -16,86 +16,63 @@ import {
   ChartTooltip,
   ChartTooltipContent
 } from '@/components/ui/chart';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-interface ChartDataType {
-  browser: string;
-  visitors: number;
-  fill: string;
+interface ProductDataType {
+  _id: string;
+  count: number;
+}
+
+interface MostComplainedProductsProps {
+  mostComplainedProducts: ProductDataType[];
 }
 
 const colors: { [key: string]: string } = {
-  led: 'var(--color-chrome)',
-  pared: 'var(--color-safari)',
-  techo: 'green',
-  other: 'var(--color-other)'
+  'Tablet Apple iPad Pro': 'var(--color-chrome)',
+  'Laptop Dell XPS 13': 'var(--color-safari)',
+  'Auriculares Bose QuietComfort 45': 'green',
+  'Smartphone Samsung Galaxy S23': 'var(--color-other)'
 };
 
 const chartConfig: ChartConfig = {
   visitors: {
     label: 'Visitors'
   },
-  led: {
-    label: 'led',
+  'Tablet Apple iPad Pro': {
+    label: 'Tablet Apple iPad Pro',
     color: 'hsl(var(--chart-1))'
   },
-  pared: {
-    label: 'Pared',
+  'Laptop Dell XPS 13': {
+    label: 'Laptop Dell XPS 13',
     color: 'hsl(var(--chart-2))'
   },
-  techo: {
-    label: 'Techo',
+  'Auriculares Bose QuietComfort 45': {
+    label: 'Auriculares Bose QuietComfort 45',
     color: 'hsl(var(--chart-3))'
   },
-  other: {
-    label: 'Other',
+  'Smartphone Samsung Galaxy S23': {
+    label: 'Smartphone Samsung Galaxy S23',
     color: 'hsl(var(--chart-5))'
   }
 };
 
-export function PieGraph() {
-  const [data, setData] = useState<ChartDataType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export function PieGraph({
+  mostComplainedProducts
+}: MostComplainedProductsProps) {
+  const data = useMemo(() => {
+    return mostComplainedProducts.map((product) => ({
+      category: product._id,
+      count: product.count,
+      fill: colors[product._id] || colors['Smartphone Samsung Galaxy S23'] // Default to a specific color if not found
+    }));
+  }, [mostComplainedProducts]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      let baseUrl = 'http://localhost:5001';
-      try {
-        const response = await fetch(`${baseUrl}/chart-data`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-
-        const updatedData: ChartDataType[] = Object.keys(result).map((key) => ({
-          browser: key,
-          visitors: result[key],
-          fill: colors[key] || colors.other
-        }));
-
-        setData(updatedData);
-      } catch (error) {
-        setError((error as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const totalVisitors = useMemo(() => {
-    return data.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, [data]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const totalProducts = useMemo(() => {
+    return mostComplainedProducts.reduce(
+      (acc: number, product: ProductDataType) => acc + product.count,
+      0
+    );
+  }, [mostComplainedProducts]);
 
   return (
     <Card className="flex flex-col">
@@ -115,8 +92,8 @@ export function PieGraph() {
             />
             <Pie
               data={data}
-              dataKey="visitors"
-              nameKey="browser"
+              dataKey="count"
+              nameKey="category"
               innerRadius={60}
               strokeWidth={5}
             >
@@ -135,7 +112,7 @@ export function PieGraph() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalProducts.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
@@ -159,7 +136,7 @@ export function PieGraph() {
           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing total products for the last 6 months
         </div>
       </CardFooter>
     </Card>

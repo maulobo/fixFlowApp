@@ -1,14 +1,26 @@
 import { Icons } from '@/components/icons';
 
-export interface NavItem {
+// export interface NavItem {
+//   title: string;
+//   href?: string;
+//   disabled?: boolean;
+//   external?: boolean;
+//   icon?: keyof typeof Icons;
+//   label?: string;
+//   description?: string;
+//   badge?: number;
+// }
+
+export type NavItem = {
   title: string;
-  href?: string;
-  disabled?: boolean;
+  href: string;
+  icon: string;
+  label: string;
+  badge?: number; // Optional, should be a number or undefined
   external?: boolean;
-  icon?: keyof typeof Icons;
-  label?: string;
+  disabled?: boolean;
   description?: string;
-}
+};
 
 export interface NavItemWithChildren extends NavItem {
   items: NavItemWithChildren[];

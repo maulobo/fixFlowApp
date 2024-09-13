@@ -7,7 +7,7 @@ import {
   getFilteredRowModel,
   useReactTable
 } from '@tanstack/react-table';
-
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -31,6 +31,8 @@ export function DataTable<TData, TValue>({
   data,
   searchKey
 }: DataTableProps<TData, TValue>) {
+  const [showDestacados, setShowDestacados] = useState(false);
+
   const table = useReactTable({
     data,
     columns,
@@ -38,11 +40,20 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel()
   });
 
-  /* this can be used to get the selectedrows 
-  console.log("value", table.getFilteredSelectedRowModel()); */
+  const handleToggleDestacados = () => {
+    setShowDestacados(!showDestacados);
+
+    // Aplicar o remover el filtro para la columna "destacado"
+    table
+      .getColumn('destacado')
+      ?.setFilterValue(showDestacados ? undefined : true);
+  };
 
   return (
     <>
+      <Button variant="default" size="sm" onClick={handleToggleDestacados}>
+        {showDestacados ? 'Mostrar Todos' : 'Mostrar Destacados'}
+      </Button>
       <Input
         placeholder={`Search ${searchKey}...`}
         value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}

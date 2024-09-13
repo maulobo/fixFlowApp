@@ -1,10 +1,8 @@
-export const fetchData = async () => {
+export const fetchData = async (url: string) => {
   try {
-    const res = await fetch(`${process.env.BASE_URL}/chart-data`, {
+    const res = await fetch(`${process.env.BASE_URL}/${url}`, {
       method: 'GET',
-      headers: {
-        'Cache-Control': 'no-cache'
-      }
+      cache: 'no-store'
     });
     const data = await res.json();
     return data;

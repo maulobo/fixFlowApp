@@ -17,6 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent
 } from '@/components/ui/chart';
+
 const chartData = [
   { month: 'January', desktop: 186, mobile: 80 },
   { month: 'February', desktop: 305, mobile: 200 },
@@ -37,10 +38,12 @@ const chartConfig = {
   }
 } satisfies ChartConfig;
 
-export function AreaGraph() {
+export function AreaGraph({ charDataMonth }: any) {
+  console.log(charDataMonth);
   return (
     <Card>
       <CardHeader>
+        {charDataMonth && <p>{charDataMonth}a</p>}
         <CardTitle>Area Chart - Stacked</CardTitle>
         <CardDescription>
           Showing total visitors for the last 6 months

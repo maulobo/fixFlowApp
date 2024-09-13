@@ -1,8 +1,6 @@
 'use client';
-
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
 import { Icons } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { NavItem } from '@/types';
@@ -33,8 +31,6 @@ export function DashboardNav({
     return null;
   }
 
-  console.log('isActive', isMobileNav, isMinimized);
-
   return (
     <nav className="grid items-start gap-2">
       <TooltipProvider>
@@ -59,9 +55,14 @@ export function DashboardNav({
 
                     {isMobileNav || (!isMinimized && !isMobileNav) ? (
                       <span className="mr-2 truncate">{item.title}</span>
-                    ) : (
-                      ''
-                    )}
+                    ) : null}
+
+                    {/* Mostrar el badge si existe */}
+                    {item.badge && item.badge > 0 ? (
+                      <span className="ml-auto mr-3 inline-block rounded-full bg-red-500 px-2 py-1 text-xs font-semibold text-white">
+                        {item.badge}
+                      </span>
+                    ) : null}
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent
