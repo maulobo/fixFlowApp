@@ -23,14 +23,14 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 export const updateHistorySchema = z.object({
-  updatedBy: z.string().min(1, 'El usuario que actualizó es obligatorio.'), // Aquí el ObjectId lo representamos como string
-  updateDate: z.date().optional().default(new Date()), // Fecha opcional, con valor por defecto de la fecha actual
-  changes: z.string().optional() // Descripción opcional de los cambios
+  updatedBy: z.any().optional(), // Aquí el ObjectId lo representamos como string
+  updateDate: z.any().optional(), // Fecha opcional, con valor por defecto de la fecha actual
+  changes: z.any().optional() // Descripción opcional de los cambios
 });
 
 export const formSchema = z.object({
   orderNumber: z.string().min(1, 'El número de orden es obligatorio.'),
-  dateTime: z.date().default(new Date()), // Fecha de creación por defecto a la fecha actual
+  // dateTime: z.date().default(new Date()), // Fecha de creación por defecto a la fecha actual
   comments: z.string().optional(), // Comentarios opcionales
   product: z.string().min(1, 'El producto es obligatorio.'),
   trackingCode: z.string().min(1, 'El código de seguimiento es obligatorio.'),
@@ -61,29 +61,28 @@ export const formSchema = z.object({
     ])
     .optional(),
   shippingCost: z
-    .string()
+    .any()
     .optional()
     .transform((value) => (value ? Number(value) : undefined)), // Costo de envío opcional
-  photo: z
-    .array(
-      z.object({
-        url: z.string(),
-        name: z.string()
-      })
-    )
-    .optional(), // URL o path de la foto opcional
+  // photo: z
+  //   .array(
+  //     z.object({
+  //       url: z.string(),
+  //       name: z.string()
+  //     })
+  //   )
+  //   .optional(), // URL o path de la foto opcional
   errorPrice: z
-    .string()
+    .any()
     .optional()
     .transform((value) => (value ? Number(value) : undefined)), // Cantidad opcional
   shippingType: z.string().optional(), // Tipo de envío opcional
   detectionLocation: z.string().optional(), // Lugar de detección opcional
   customer: z.string().optional(), // Cliente opcional
-  createdBy: z
-    .string()
-    .min(1, 'El usuario que creó el reclamo es obligatorio.'), // Referencia al usuario que creó el reclamo
+  // createdBy: z
+  //   .string()
+  //   .min(1, 'El usuario que creó el reclamo es obligatorio.'), // Referencia al usuario que creó el reclamo
   isClosed: z.boolean().default(false), // Campo booleano de cierre
-  closedAt: z.date().optional(), // Fecha de cierre opcional
   updatedBy: z.string().optional(), // Usuario que actualizó por última vez
   updateHistory: z.array(updateHistorySchema).optional() // Historial de cambios opcional
 });

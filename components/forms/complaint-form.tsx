@@ -4,10 +4,11 @@ import * as z from 'zod';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Trash } from 'lucide-react';
+import { Hourglass, Trash } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import {
   Form,
@@ -52,6 +53,8 @@ type ComplaintFormValues = z.infer<typeof formSchema>;
 export const ComplaintForm: React.FC<ComplaintFormProps> = ({
   initialData
 }) => {
+  const { data: session, status } = useSession();
+
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
@@ -112,16 +115,32 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     defaultValues
   });
 
+  console.log('Form errors:', form.formState.errors);
+
   const onSubmit = async (data: ComplaintFormValues) => {
     try {
-      setLoading(true);
       if (initialData) {
-        await axios.put(`${BASE_URL}/edit-complaint/${initialData._id}`, data);
+        console.log('hola');
+        const res = await axios.put(
+          `${BASE_URL}/edit-complaint/${initialData._id}`,
+          data,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-User-Id': session?.user?.email
+            }
+          }
+        );
       } else {
-        await axios.post(`${BASE_URL}/add`, data);
+        await axios.post(`${BASE_URL}/add`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-Id': session?.user?.email
+          }
+        });
       }
       router.refresh();
-      router.push(`/dashboard/complaints`);
+      router.push(`/dashboard/reclamo`);
       toast({
         variant: 'success',
         title: 'Success',
@@ -143,7 +162,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
       setLoading(true);
       await axios.delete(`${BASE_URL}/delete-complaint/${params.complaintId}`);
       router.refresh();
-      router.push(`/dashboard/complaints`);
+      router.push(`/dashboard/reclamo`);
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -211,6 +230,23 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                     <Input
                       disabled={loading}
                       placeholder="Product Name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="trackingCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Trakking Code</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="N trackking"
                       {...field}
                     />
                   </FormControl>
@@ -346,6 +382,24 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                       disabled={loading}
                       type="number"
                       placeholder="Shipping Cost"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="errorPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Costo del error</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      type="string"
+                      placeholder="Error Price"
                       {...field}
                     />
                   </FormControl>
