@@ -58,9 +58,8 @@ export default function BlockMonthlyChart() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`${BASE_URL}/complaints`);
+        const response = await fetch(`${BASE_URL}/dashboard-data`);
         const result = await response.json();
-        console.log(result);
 
         if (result?.trend && Array.isArray(result.trend)) {
           // Formatear los datos

@@ -130,10 +130,15 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'Pendientes',
-    href: '/dashboard/pendientes',
+    href: '/dashboard/reclamo',
     icon: 'pizza',
-    label: 'employee',
-    badge: 1
+    label: 'employee'
+  },
+  {
+    title: 'Cerrados',
+    href: '/dashboard/cerrados',
+    icon: 'history',
+    label: 'Cerrados'
   },
   {
     title: 'Reportes',
@@ -170,6 +175,7 @@ export const navItems: NavItem[] = [
 export const updateNavItemsWithPendingCount = async () => {
   try {
     const data: ChartData = await fetchData('complaints');
+
     const num = data.pendingComplaints.length;
 
     return [
@@ -191,6 +197,12 @@ export const updateNavItemsWithPendingCount = async () => {
         icon: 'pizza',
         label: 'employee',
         badge: num
+      },
+      {
+        title: 'Cerrados',
+        href: '/dashboard/cerrados',
+        icon: 'history',
+        label: 'Cerrados'
       },
       {
         title: 'Reportes',

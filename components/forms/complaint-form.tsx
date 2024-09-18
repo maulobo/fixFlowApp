@@ -120,7 +120,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
   const onSubmit = async (data: ComplaintFormValues) => {
     try {
       if (initialData) {
-        console.log('hola');
         const res = await axios.put(
           `${BASE_URL}/edit-complaint/${initialData._id}`,
           data,
@@ -151,6 +150,42 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
         variant: 'destructive',
         title: 'Error',
         description: 'There was a problem with your request.'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const markAsResolved = async () => {
+    try {
+      setLoading(true);
+      await axios.put(
+        `${BASE_URL}/edit-complaint/${initialData._id}`,
+        {
+          ...initialData,
+          isClosed: true,
+          status: 'Resuelto',
+          closedAt: new Date().toISOString() // O usa la fecha que consideres
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-Id': session?.user?.email
+          }
+        }
+      );
+      router.refresh();
+      router.push(`/dashboard/reclamo`);
+      toast({
+        variant: 'success',
+        title: 'Resolved',
+        description: 'The complaint has been marked as resolved.'
+      });
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'There was a problem marking the complaint as resolved.'
       });
     } finally {
       setLoading(false);
@@ -211,7 +246,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                   <FormLabel>Numero de Orden</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={loading}
+                      disabled={loading || initialData}
                       placeholder="Order Number"
                       {...field}
                     />
@@ -245,7 +280,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                   <FormLabel>Trakking Code</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={loading}
+                      disabled={loading || initialData}
                       placeholder="N trackking"
                       {...field}
                     />
@@ -431,6 +466,16 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
           <Button type="submit" className="w-full" disabled={loading}>
             {action}
           </Button>
+          {initialData && (
+            <Button
+              type="button"
+              className="w-full bg-green-400 hover:bg-green-500"
+              disabled={loading}
+              onClick={markAsResolved}
+            >
+              Mark as Resolved
+            </Button>
+          )}
         </form>
       </Form>
     </>

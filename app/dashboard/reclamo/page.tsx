@@ -10,7 +10,7 @@ const breadcrumbItems = [
 ];
 
 export default async function page() {
-  const data: ChartData = await fetchData('complaints');
+  const data: ChartData = await fetchData('dashboard-data');
 
   return (
     <PageContainer>

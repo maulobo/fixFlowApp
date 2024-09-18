@@ -1,4 +1,5 @@
 import Block from '@/components/block/block';
+import ClaimReason from '@/components/block/block-claim-reason';
 import BlockMonthlyChart from '@/components/block/block-monthly-chart';
 import BlockAdd from '@/components/block/blockAdd';
 import { AreaGraph } from '@/components/charts/area-graph';
@@ -18,6 +19,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fetchData } from '@/lib/fetchData';
 import { ChartData, ChartDataMonth } from '@/types/types-mine';
+
+const rangeSelected = () => {};
+
 const months = [
   'Jan',
   'Feb',
@@ -34,9 +38,7 @@ const months = [
 ];
 
 export default async function page() {
-  const data: ChartData = await fetchData(`complaints`);
-
-  console.log(data.complainedByMonth);
+  const data: ChartData = await fetchData(`dashboard-data`);
 
   return (
     <PageContainer scrollable={true}>
@@ -47,7 +49,7 @@ export default async function page() {
           </h2>
           <div className="hidden items-center space-x-2 md:flex">
             <CalendarDateRangePicker />
-            <Button>Download</Button>
+            <Button>Check</Button>
           </div>
         </div>
         <Tabs defaultValue="overview" className="space-y-4">
@@ -144,29 +146,44 @@ export default async function page() {
                   <p className="text-xs text-muted-foreground">Huamintosss</p>
                 </CardContent>
               </Card>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
-              {/* <Card className="col-span-4 md:col-span-3">
-                <CardHeader>
-                  <CardTitle>Recent Added</CardTitle>
-                  <CardDescription>
-                    {data.pendingComplaints
-                      ? `You add ${data.pendingComplaints.length} products`
-                      : ''}
-                  </CardDescription>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Tiempo promedio de respuesta
+                  </CardTitle>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    className="h-4 w-4 text-muted-foreground"
+                  >
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                  </svg>
                 </CardHeader>
                 <CardContent>
-                  {data.pendingComplaints ? (
-                    <RecentSales added={data.pendingComplaints} />
-                  ) : (
-                    'No data'
-                  )}
+                  <div className="text-2xl font-bold">
+                    {data.recentComplaints
+                      ? (data.avgResolutionTime / 3600000).toFixed(2)
+                      : 'No data'}
+                  </div>
+                  <p className="text-xs text-muted-foreground">Horas</p>
                 </CardContent>
-              </Card> */}
-              <div className="col-span-4 md:col-span-4">
+              </Card>
+            </div>
+            <div className="col-span-4 md:col-span-5">
+              <ClaimReason />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
+              <div className="col-span-4 md:col-span-2">
                 <BlockMonthlyChart />
               </div>
-              <div className="col-span-4 md:col-span-2">
+              {/* este es para vaya saber que asi que lo dejamos para ver q se puede hacer */}
+              {/* <div className="col-span-4 md:col-span-2">
                 {data.recentComplaints ? (
                   <PieGraph
                     mostComplainedProducts={data.mostComplainedProducts}
@@ -174,7 +191,7 @@ export default async function page() {
                 ) : (
                   'No data'
                 )}
-              </div>
+              </div> */}
             </div>
           </TabsContent>
         </Tabs>
