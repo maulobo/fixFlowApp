@@ -2,7 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 
-import { labels, priorities, statuses } from '../data/data';
+import { labels } from '../data/data';
 import { Task } from '../data/schema';
 
 import { Checkbox } from '@/components/ui/checkbox';

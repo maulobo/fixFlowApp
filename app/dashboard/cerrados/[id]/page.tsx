@@ -9,6 +9,9 @@ import ComplaintDetails from '../components/complaint-details';
 import UpdateHistoryes from '../components/complaint-history';
 
 // Elementos del breadcrumb
+
+export const revalidate = 0;
+
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
   { title: 'Historial', link: '/dashboard/historial' }

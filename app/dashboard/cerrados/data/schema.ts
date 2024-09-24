@@ -8,8 +8,7 @@ export const taskSchema = z.object({
   createdAt: z.string(),
   closedAt: z.string(),
   solutionType: z.string(),
-  resolutionTimeFormatted: z.string(),
-  status: z.string()
+  resolutionTimeFormatted: z.string()
 });
 
 export type Task = z.infer<typeof taskSchema>;

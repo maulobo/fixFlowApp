@@ -30,7 +30,6 @@ export function DataTableRowActions<TData>({
   row
 }: DataTableRowActionsProps<TData>) {
   const task = taskSchema.parse(row.original);
-  console.log('Row original data:', row.original);
 
   return (
     <DropdownMenu>
@@ -45,22 +44,13 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <Link href={`/dashboard/cerrados/${task.id}`}>
-          <DropdownMenuItem>Watch</DropdownMenuItem>
+          <DropdownMenuItem>Observar</DropdownMenuItem>
         </Link>
         <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.status}>
-              {labels.map((label) => (
-                <DropdownMenuRadioItem key={label.value} value={label.value}>
-                  {label.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem>

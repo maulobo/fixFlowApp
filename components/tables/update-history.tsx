@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-
+import { useRouter } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -22,6 +22,8 @@ import {
 } from '@/components/ui/table';
 
 export default function UpdateHistory({ history }: any) {
+  const router = useRouter();
+  const reload = () => {};
   return (
     <Card>
       <CardHeader>
@@ -78,9 +80,14 @@ export default function UpdateHistory({ history }: any) {
         </Table>
       </CardContent>
       <CardFooter className="justify-center border-t p-4">
-        <Button size="sm" variant="ghost" className="gap-1">
+        <Button
+          size="sm"
+          variant="destructive"
+          className="gap-1"
+          onClick={() => router.refresh()}
+        >
           <PlusCircle className="h-3.5 w-3.5" />
-          Ver historial completo
+          Actualizar historial
         </Button>
       </CardFooter>
     </Card>

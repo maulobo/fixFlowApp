@@ -103,7 +103,7 @@ export default function BlockMonthlyChart() {
   const averageComplaints = data.length > 0 ? totalComplaints / data.length : 0;
 
   return (
-    <Card className="w-full">
+    <Card>
       <CardHeader className="space-y-0 pb-2">
         <CardDescription>This Month</CardDescription>
         <CardTitle className="text-4xl tabular-nums">

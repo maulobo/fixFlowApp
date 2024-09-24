@@ -26,37 +26,51 @@ export default function UpdateHistory({ updateHistory }: UpdateHistoryProps) {
         <CardTitle>Historial de Actualizaciones</CardTitle>
       </CardHeader>
       <CardContent>
-        {updateHistory.map((update, index) => (
-          <div key={index}>
-            <p>
-              <strong>Fecha de Actualización:</strong>{' '}
-              {new Date(update.updatedAt).toLocaleString()}
-            </p>
-            <p>
-              <strong>Actualizado por:</strong> {update.updatedBy}
-            </p>
-            <Separator className="my-2" />
-
-            {/* Mostrar los cambios realizados */}
-            <div>
-              {update.changes.map((change, idx) => (
-                <div key={idx} className="mb-2">
-                  <p>
-                    <strong>Campo:</strong> {change.field}
-                  </p>
-                  <p>
-                    <strong>Valor anterior:</strong> {change.oldValue}
-                  </p>
-                  <p>
-                    <strong>Nuevo valor:</strong> {change.newValue}
-                  </p>
-                  <Separator className="my-1" />
-                </div>
-              ))}
-            </div>
-            <Separator className="my-4" />
-          </div>
-        ))}
+        <table className="w-full table-auto text-left">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2">Fecha de Actualización</th>
+              <th className="border px-4 py-2">Actualizado por</th>
+              <th className="border px-4 py-2">Campo</th>
+              <th className="border px-4 py-2">Valor Anterior</th>
+              <th className="border px-4 py-2">Nuevo Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            {updateHistory.map((update, index) => (
+              <React.Fragment key={index}>
+                {update.changes.map((change, idx) => (
+                  <tr key={idx}>
+                    {idx === 0 && (
+                      <>
+                        <td
+                          className="border px-4 py-2"
+                          rowSpan={update.changes.length}
+                        >
+                          {new Date(update.updatedAt).toLocaleString()}
+                        </td>
+                        <td
+                          className="border px-4 py-2"
+                          rowSpan={update.changes.length}
+                        >
+                          {update.updatedBy}
+                        </td>
+                      </>
+                    )}
+                    <td className="border px-4 py-2">{change.field}</td>
+                    <td className="border px-4 py-2">{change.oldValue}</td>
+                    <td className="border px-4 py-2">{change.newValue}</td>
+                  </tr>
+                ))}
+                <tr>
+                  <td colSpan={5}>
+                    <Separator className="my-4" />
+                  </td>
+                </tr>
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
       </CardContent>
     </Card>
   );

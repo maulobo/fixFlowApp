@@ -14,7 +14,13 @@ const breadcrumbItems = [
 
 // Función para obtener las tareas
 const getTasks = async (): Promise<Complaint[]> => {
-  const response = await fetch(`${BASE_URL}/get-history`);
+  const response = await fetch(`${BASE_URL}/get-history`, {
+    method: 'GET',
+    cache: 'no-store',
+    headers: {
+      'Cache-Control': 'no-store' // Evita almacenar en caché
+    }
+  });
 
   if (!response.ok) {
     throw new Error('Failed to fetch task history');

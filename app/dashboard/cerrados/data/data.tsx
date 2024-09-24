@@ -11,16 +11,20 @@ import {
 
 export const labels = [
   {
-    value: 'bug',
-    label: 'Bug'
+    value: 'typeError',
+    label: 'Tipo de error'
   },
   {
-    value: 'feature',
-    label: 'Feature'
+    value: 'resolutionTimeFormatted',
+    label: 'Tiempo de resolucion'
   },
   {
-    value: 'documentation',
-    label: 'Documentation'
+    value: 'solutionType',
+    label: 'Tipo solucion'
+  },
+  {
+    value: 'closedAt',
+    label: 'Cerrado el'
   }
 ];
 

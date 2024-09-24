@@ -157,6 +157,20 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
   };
 
   const markAsResolved = async () => {
+    // Validar que los campos requeridos estén completos
+    const { errorPrice, shippingCost, solutionType, product } =
+      form.getValues();
+    console.log(errorPrice, shippingCost, solutionType, product);
+    if (!errorPrice || !shippingCost || !solutionType || !product) {
+      toast({
+        variant: 'destructive',
+        title: 'Incomplete Fields',
+        description:
+          'Please ensure all required fields are filled: error price, shipping cost, solution type, and product.'
+      });
+      return;
+    }
+
     try {
       setLoading(true);
       await axios.put(
@@ -165,7 +179,11 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
           ...initialData,
           isClosed: true,
           status: 'Resuelto',
-          closedAt: new Date().toISOString() // O usa la fecha que consideres
+          closedAt: new Date().toISOString(), // Fecha actual
+          errorPrice,
+          shippingCost,
+          solutionType,
+          product
         },
         {
           headers: {
@@ -175,7 +193,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
         }
       );
       router.refresh();
-      router.push(`/dashboard/reclamo`);
+      router.push(`/dashboard`);
       toast({
         variant: 'success',
         title: 'Resolved',

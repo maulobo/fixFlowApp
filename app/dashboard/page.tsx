@@ -1,44 +1,28 @@
-import Block from '@/components/block/block';
 import ClaimReason from '@/components/block/block-claim-reason';
 import BlockMonthlyChart from '@/components/block/block-monthly-chart';
-import BlockAdd from '@/components/block/blockAdd';
-import { AreaGraph } from '@/components/charts/area-graph';
-import { BarGraph } from '@/components/charts/bar-graph';
-import { PieGraph } from '@/components/charts/pie-graph';
+import { LineDots } from '@/components/charts/line-dots-graph';
 import { CalendarDateRangePicker } from '@/components/date-range-picker';
 import PageContainer from '@/components/layout/page-container';
-import { RecentSales } from '@/components/recent-sales';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fetchData } from '@/lib/fetchData';
-import { ChartData, ChartDataMonth } from '@/types/types-mine';
+import { Plus } from 'lucide-react';
 
-const rangeSelected = () => {};
+export default async function page({
+  searchParams
+}: {
+  searchParams: { from?: string; to?: string };
+}) {
+  const { from, to } = searchParams;
+  const startDate = from ? from : null;
+  const endDate = to ? to : null;
 
-const months = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec'
-];
-
-export default async function page() {
-  const data: ChartData = await fetchData(`dashboard-data`);
+  const query = `dashboard-data${
+    startDate && endDate ? `?startDate=${startDate}&endDate=${endDate}` : ''
+  }`;
+  const data = await fetchData(query);
 
   return (
     <PageContainer scrollable={true}>
@@ -49,7 +33,6 @@ export default async function page() {
           </h2>
           <div className="hidden items-center space-x-2 md:flex">
             <CalendarDateRangePicker />
-            <Button>Check</Button>
           </div>
         </div>
         <Tabs defaultValue="overview" className="space-y-4">
@@ -177,21 +160,94 @@ export default async function page() {
             <div className="col-span-4 md:col-span-5">
               <ClaimReason />
             </div>
-
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
-              <div className="col-span-4 md:col-span-2">
-                <BlockMonthlyChart />
+            {/* grafico month y 3 cards */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4 lg:grid-cols-4">
+              <div className="col-span-4 grid grid-cols-1 gap-4 md:col-span-4 md:row-span-1 md:grid-cols-2">
+                {/* <BlockMonthlyChart /> */}
+                <LineDots />
+                <div>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        className="h-4 w-4 text-muted-foreground"
+                      >
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                      </svg>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">
+                        Costos de errores
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        $ en pesos
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        Gastos en errores
+                      </CardTitle>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        className="h-4 w-4 text-muted-foreground"
+                      >
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                      </svg>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">
+                        $
+                        {data.recentComplaints
+                          ? data.costsAndLosses.totalErrorCost
+                          : 'No data'}
+                      </div>
+                      <p className="text-xs text-muted-foreground">Pesos</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        Gastos en envios
+                      </CardTitle>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        className="h-4 w-4 text-muted-foreground"
+                      >
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                      </svg>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">
+                        $
+                        {data.recentComplaints
+                          ? data.costsAndLosses.totalShippingsCost
+                          : 'No data'}
+                      </div>
+                      <p className="text-xs text-muted-foreground">Pesos</p>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
-              {/* este es para vaya saber que asi que lo dejamos para ver q se puede hacer */}
-              {/* <div className="col-span-4 md:col-span-2">
-                {data.recentComplaints ? (
-                  <PieGraph
-                    mostComplainedProducts={data.mostComplainedProducts}
-                  />
-                ) : (
-                  'No data'
-                )}
-              </div> */}
             </div>
           </TabsContent>
         </Tabs>
