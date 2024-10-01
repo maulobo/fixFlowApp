@@ -14,14 +14,6 @@ const ImgSchema = z.object({
   url: z.string()
 });
 
-const MAX_FILE_SIZE = 600000000000000000000000;
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp'
-];
-
 export const updateHistorySchema = z.object({
   updatedBy: z.any().optional(), // Aquí el ObjectId lo representamos como string
   updateDate: z.any().optional(), // Fecha opcional, con valor por defecto de la fecha actual
@@ -84,5 +76,6 @@ export const formSchema = z.object({
   //   .min(1, 'El usuario que creó el reclamo es obligatorio.'), // Referencia al usuario que creó el reclamo
   isClosed: z.boolean().default(false), // Campo booleano de cierre
   updatedBy: z.string().optional(), // Usuario que actualizó por última vez
-  updateHistory: z.array(updateHistorySchema).optional() // Historial de cambios opcional
+  updateHistory: z.array(updateHistorySchema).optional(), // Historial de cambios opcional
+  productChange: z.string().optional()
 });

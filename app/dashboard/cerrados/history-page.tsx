@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 
 import { DataTable } from './components/data-table';
 import { columns } from './components/columns';
-import { BASE_URL } from '@/constants/data';
 
 export const metadata: Metadata = {
   title: 'History',

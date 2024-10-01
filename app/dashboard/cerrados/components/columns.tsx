@@ -36,12 +36,12 @@ export const columns: ColumnDef<Task>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'typeError',
+    accessorKey: 'orderNumber',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="tipo de error" />
+      <DataTableColumnHeader column={column} title="Numero de orden" />
     ),
     cell: ({ row }) => (
-      <div className="w-[80px]">{row.getValue('typeError')}</div>
+      <div className="w-[80px]">{row.getValue('orderNumber')}</div>
     ),
     enableSorting: false,
     enableHiding: false

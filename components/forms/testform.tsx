@@ -52,7 +52,7 @@ interface Products {
 
 type ComplaintFormValues = z.infer<typeof formSchema>;
 
-export const ComplaintForm: React.FC<ComplaintFormProps> = ({
+export const ComplaintForm2: React.FC<ComplaintFormProps> = ({
   initialData
 }) => {
   const { data: session, status } = useSession();
@@ -247,17 +247,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     fetchProd();
   }, []);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setSearchTerm(value);
-
-    // Filtrar los productos por nombre
-    const filtered = products.filter((product) =>
-      product.name.toLowerCase().includes(value.toLowerCase())
-    );
-
-    setFilteredProducts(filtered); // Guardar productos filtrados
-  };
   return (
     <>
       <AlertModal
@@ -286,23 +275,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
           className="w-full space-y-8"
         >
           <div className="gap-8 md:grid md:grid-cols-3">
-            <FormField
-              control={form.control}
-              name="orderNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Numero de Orden</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading || initialData}
-                      placeholder="Order Number"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="product"
@@ -379,105 +351,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
 
             <FormField
               control={form.control}
-              name="trackingCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Trakking Code</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading || initialData}
-                      placeholder="N trackking"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="comments"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Comentarios</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Comments"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="claimReasons"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Razon del reclamo</FormLabel>
-                  <FormControl>
-                    <Select
-                      disabled={loading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a reason"
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {claimReasons.map((reason) => (
-                          <SelectItem key={reason} value={reason}>
-                            {reason}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormDescription>Seleccione el estado</FormDescription>
-                  <FormControl>
-                    <Select
-                      disabled={loading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a status"
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {statuses.map((statusOption) => (
-                          <SelectItem key={statusOption} value={statusOption}>
-                            {statusOption}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="solutionType"
               render={({ field }) => (
                 <FormItem>
@@ -492,8 +365,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                         field.onChange(value);
                         if (value === 'Cambio de producto') {
                           setCambio(true);
-                        } else if (value !== 'Cambio de producto') {
-                          setCambio(false);
                         }
                       }}
                       value={field.value}
@@ -518,7 +389,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                 </FormItem>
               )}
             />
-            {cambio && (
+            {cambio ? (
               <FormField
                 control={form.control}
                 name="productChange"
@@ -590,64 +461,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                   </FormItem>
                 )}
               />
-            )}
-
-            <FormField
-              control={form.control}
-              name="shippingCost"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Shipping Cost</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      type="number"
-                      placeholder="Shipping Cost"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="errorPrice"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Costo del error</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      type="string"
-                      placeholder="Error Price"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* <FormField
-              control={form.control}
-              name="photo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Upload Photo</FormLabel>
-                  <FormControl>
-                    <FileUpload
-                      disabled={loading}
-                      onChange={(files: File[]) => {
-                        if (files.length) {
-                          // Handle file upload here
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
+            ) : null}
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {action}

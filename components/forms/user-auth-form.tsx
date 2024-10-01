@@ -65,7 +65,6 @@ export default function UserAuthForm({ isSignup }: UserAuthFormProps) {
     setLoading(true);
 
     if (isSignup) {
-      // Handle sign up logic here
       try {
         const response = await fetch(`${URL}/api/auth/register`, {
           method: 'POST',

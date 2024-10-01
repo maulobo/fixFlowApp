@@ -40,7 +40,7 @@ const authConfig = {
               email: email,
               password: password
             };
-            console.log(user);
+
             return user;
           } catch (error) {
             console.log('failed to found user:', error);

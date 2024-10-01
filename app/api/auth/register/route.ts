@@ -5,6 +5,7 @@ import crypto from 'crypto'; // Para generar el token de verificación
 import { connectdb } from '@/lib/dbConnect';
 import { sendVerificationEmail } from '@/lib/email'; // Importa tu función de envío de email
 import User from '@/schema/UserSchema';
+import { getTenantFromSubdomain } from '@/lib/tenants';
 
 export async function POST(req: NextRequest) {
   await connectdb();
@@ -12,12 +13,12 @@ export async function POST(req: NextRequest) {
 
   // Define el esquema de validación
   const schema = z.object({
-    name: z.string().min(1), // Agrega validación para el nombre
+    name: z.string().min(1),
     email: z.string().email(),
-    password: z.string().min(6) // Puedes añadir más reglas de validación aquí
+    password: z.string().min(6),
+    tenantId: z.string().optional() // Agregamos tenantId de manera opcional
   });
 
-  // Validar los datos de entrada
   const parsed = schema.safeParse(await req.json());
 
   if (!parsed.success) {
@@ -27,15 +28,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { name, email, password } = parsed.data;
-  console.log(parsed.data);
+  const { name, email, password, tenantId } = parsed.data;
+  console.log('Parsed data:', parsed.data);
 
   try {
-    // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      console.log('AAA EXISTE');
       const { emailVerified } = await User.findOne({ email });
       console.log(emailVerified);
       if (emailVerified == false) {
@@ -44,7 +43,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(
           {
             message:
-              'User Already exists but is not verificated, check your mail and verify'
+              'User already exists but is not verified, check your mail and verify'
           },
           { status: 201 }
         );
@@ -62,13 +61,19 @@ export async function POST(req: NextRequest) {
     // Generate a verification token (could be a JWT or random string)
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
+    const host = req.nextUrl.hostname;
+
+    // Aquí es donde asignas el tenantId, puedes obtenerlo por subdominio u otra lógica
+    const tenantIdFinal = tenantId || getTenantFromSubdomain(host); // O usar la lógica que prefieras
+
     // Save the user to the database
     const newUser = new User({
-      name, // Agrega el nombre al nuevo usuario
+      name,
       email,
       password: hashedPassword,
       verificationToken,
-      emailVerified: false // Por defecto, el email no está verificado
+      emailVerified: false, // Por defecto, el email no está verificado
+      tenantId: tenantIdFinal // Agrega el tenantId al usuario
     });
     console.log(newUser);
 
