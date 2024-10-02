@@ -1,7 +1,9 @@
-import { CredentialsInputs, NextAuthConfig, User } from 'next-auth';
+import { CredentialsInputs, NextAuthConfig } from 'next-auth';
 import CredentialProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
 import { z } from 'zod';
+import { connectdb } from './lib/dbConnect';
+import { getUserModel } from './schema/UserSchema';
 
 const authConfig = {
   providers: [
@@ -34,36 +36,34 @@ const authConfig = {
 
         async function getUser(
           email: string
-        ): Promise<CredentialsInputs | undefined> {
+        ): Promise<CredentialsInputs | null> {
           try {
-            const user = {
-              email: email,
-              password: password
-            };
-
+            await connectdb();
+            const User = getUserModel();
+            const user = await User.findOne({ email });
             return user;
           } catch (error) {
-            console.log('failed to found user:', error);
-            throw new Error('Failed');
+            console.log('Failed to find user:', error);
+            throw new Error('Failed to find user');
           }
         }
 
         const user = await getUser(email);
 
         if (user) {
-          // Any object returned will be saved in `user` property of the JWT
+          // Aquí deberías verificar la contraseña
+          // Por ejemplo: if (await bcrypt.compare(password, user.password)) {
+          //   return user;
+          // }
           return user;
         } else {
-          // If you return null then an error will be displayed advising the user to check their details.
           return null;
-
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
         }
       }
     })
   ],
   pages: {
-    signIn: '/', //sigin pages
+    signIn: '/', //signin page
     newUser: '/signup'
   },
   secret: process.env.NEXTAUTH_SECRET

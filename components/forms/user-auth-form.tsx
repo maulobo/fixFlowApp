@@ -34,7 +34,8 @@ const signInSchema = z.object({
 
 // Define schema for sign up
 const signUpSchema = signInSchema.extend({
-  name: z.string().min(1, { message: 'Name is required' }) // Add name field for sign up
+  name: z.string().min(1, { message: 'Name is required' }),
+  tenantId: z.string().min(1, { message: 'Tenant name is required' })
 });
 
 type UserFormValue =
@@ -42,7 +43,7 @@ type UserFormValue =
   | z.infer<typeof signUpSchema>;
 
 interface UserAuthFormProps {
-  isSignup?: boolean; // Prop to differentiate between sign up and sign in
+  isSignup?: boolean;
 }
 
 export default function UserAuthForm({ isSignup }: UserAuthFormProps) {
@@ -55,9 +56,9 @@ export default function UserAuthForm({ isSignup }: UserAuthFormProps) {
   const form = useForm<UserFormValue>({
     resolver: zodResolver(isSignup ? signUpSchema : signInSchema),
     defaultValues: {
-      email: '', // Define initial value to ensure controlled input
-      password: '', // Define initial value to ensure controlled input
-      ...(isSignup && { name: '' }) // Ensure 'name' has an initial value if in sign-up mode
+      email: '',
+      password: '',
+      ...(isSignup && { name: '', tenantId: '' })
     }
   });
 
@@ -97,7 +98,6 @@ export default function UserAuthForm({ isSignup }: UserAuthFormProps) {
       } catch (error) {
         console.error(error);
       }
-      // Example: await registerUser(data);
     } else {
       await signIn('credentials', {
         email: data.email as string,
@@ -127,6 +127,26 @@ export default function UserAuthForm({ isSignup }: UserAuthFormProps) {
                     <Input
                       type="text"
                       placeholder="Enter your name"
+                      disabled={loading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+          {isSignup && (
+            <FormField
+              control={form.control}
+              name="tenantId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tenant</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter your tenant name"
                       disabled={loading}
                       {...field}
                     />
@@ -194,7 +214,7 @@ export default function UserAuthForm({ isSignup }: UserAuthFormProps) {
       {!isSignup && (
         <div className="mt-4 text-center">
           <p className="text-sm text-muted-foreground">
-            Dont have an account?{' '}
+            Don't have an account?{' '}
             <Link href="/signup" className="text-primary underline">
               Sign Up
             </Link>

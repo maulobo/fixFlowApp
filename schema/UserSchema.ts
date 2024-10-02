@@ -1,16 +1,17 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
 
 export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
   emailVerified: boolean;
-  verificationToken?: string; // Agrega este campo opcional
+  tenantId: string;
+  verificationToken?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const UserSchema: Schema = new Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -34,6 +35,10 @@ const UserSchema: Schema = new Schema({
     type: String,
     default: ''
   },
+  tenantId: {
+    type: String,
+    default: ''
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -44,12 +49,6 @@ const UserSchema: Schema = new Schema({
   }
 });
 
-// Middleware para actualizar el campo updatedAt antes de cada save
-UserSchema.pre('save', function (next) {
-  this.updatedAt = new Date(); // Corregido para ser de tipo Date
-  next();
-});
-
-const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
-
-export default User;
+export const getUserModel = (): Model<IUser> => {
+  return mongoose.models.User || mongoose.model<IUser>('User', userSchema);
+};

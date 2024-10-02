@@ -113,7 +113,6 @@ export type Employee = {
 };
 
 export const BASE_URL = 'http://localhost:5001';
-export const URL = `http://localhost:3000`;
 
 export const navItems: NavItem[] = [
   {
@@ -240,3 +239,26 @@ export const updateNavItemsWithPendingCount = async () => {
     return []; // Return an empty array if error occurs
   }
 };
+
+const getTenantBaseUrl = () => {
+  // Obtenemos el hostname actual
+  const hostname =
+    typeof window !== 'undefined' ? window.location.hostname : '';
+
+  // Dividimos el hostname para obtener el subdominio
+  const parts = hostname.split('.');
+
+  // Suponiendo que el subdominio está en la primera parte
+  const tenant = parts.length > 2 ? parts[0] : null; // Capturamos el subdominio
+
+  // Aquí podrías tener una lógica más compleja para definir la URL
+  // basada en el subdominio
+  if (tenant) {
+    return `https://${tenant}.webflow.com`;
+  }
+
+  // Valor por defecto para desarrollo
+  return 'http://localhost:3000';
+};
+
+export const URL = 'http://localhost:3000';

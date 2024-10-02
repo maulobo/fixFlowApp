@@ -1,5 +1,5 @@
 import { connectdb } from '@/lib/dbConnect';
-import User from '@/schema/UserSchema';
+import { getUserModel } from '@/schema/UserSchema';
 
 import { NextResponse } from 'next/server';
 
@@ -15,6 +15,7 @@ export async function GET(req: Request) {
     await connectdb(); // Asegúrate de que la base de datos esté conectada
 
     // Encuentra el usuario por el token de verificación
+    const User = getUserModel();
     const user = await User.findOne({ verificationToken: token });
 
     if (user) {
