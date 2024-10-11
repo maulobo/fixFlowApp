@@ -1,6 +1,6 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import PageContainer from '@/components/layout/page-container';
-import { UserClient } from '@/components/tables/user-tables/client';
+import { ProductClient } from '@/components/tables/user-tables/client';
 import { fetchData } from '@/lib/fetchData';
 import { ChartData, Complaint } from '@/types/types-mine';
 
@@ -17,7 +17,7 @@ export default async function page() {
       <div className="space-y-2">
         <Breadcrumbs items={breadcrumbItems} />
         {data.recentComplaints ? (
-          <UserClient data={data.pendingComplaints} />
+          <ProductClient data={data.pendingComplaints} />
         ) : (
           'No data'
         )}

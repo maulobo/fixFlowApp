@@ -20,7 +20,6 @@ export async function POST(req: NextRequest) {
   });
 
   const parsed = schema.safeParse(await req.json());
-  console.log(parsed);
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -30,8 +29,6 @@ export async function POST(req: NextRequest) {
   }
 
   const { name, email, password, tenantId } = parsed.data;
-  console.log('Parsed data:', parsed.data);
-  console.log(tenantId);
 
   try {
     const User = getUserModel();

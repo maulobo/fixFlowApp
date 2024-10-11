@@ -26,6 +26,7 @@ export const formSchema = z.object({
   comments: z.string().optional(), // Comentarios opcionales
   product: z.string().min(1, 'El producto es obligatorio.'),
   trackingCode: z.string().min(1, 'El código de seguimiento es obligatorio.'),
+  variant: z.string().min(1, 'El producto es obligatorio'),
   claimReasons: z
     .enum([
       'Error empaquetado',

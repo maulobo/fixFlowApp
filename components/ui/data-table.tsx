@@ -55,14 +55,14 @@ export function DataTable<TData, TValue>({
         {showDestacados ? 'Mostrar Todos' : 'Mostrar Destacados'}
       </Button>
       <Input
-        placeholder={`Search ${searchKey}...`}
+        placeholder={`Buscar Numero de Orden...`}
         value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
         onChange={(event) =>
           table.getColumn(searchKey)?.setFilterValue(event.target.value)
         }
         className="w-full md:max-w-sm"
       />
-      <ScrollArea className="h-[calc(80vh-220px)] rounded-md border md:h-[calc(80dvh-200px)]">
+      <ScrollArea className="h-[calc(80vh-220px)] w-[95vw] rounded-md border md:h-[calc(80dvh-200px)] md:w-[100%]">
         <Table className="relative">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

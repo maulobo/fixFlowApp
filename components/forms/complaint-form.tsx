@@ -24,7 +24,6 @@ import { Heading } from '@/components/ui/heading';
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue
@@ -35,34 +34,41 @@ import FileUpload from '../file-upload';
 import { formSchema } from './formUtils';
 import { BASE_URL } from '@/constants/data';
 import { AlertModal } from '../modal/alert-modal';
+import { Producto } from '@/types';
+import { ProductNube, Variant } from '@/types/types-tienda-nube';
 
 export const IMG_MAX_LIMIT = 3;
 
 interface ComplaintFormProps {
   initialData: any; // Ajusta el tipo según sea necesario
-}
-
-interface Products {
-  _id: string;
-  name: string;
-  price: number;
-  category: string;
-  description: string;
+  products: ProductNube[];
 }
 
 type ComplaintFormValues = z.infer<typeof formSchema>;
 
 export const ComplaintForm: React.FC<ComplaintFormProps> = ({
-  initialData
+  initialData,
+  products
 }) => {
   const { data: session, status } = useSession();
-  const [products, setProducts] = useState<Products[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Products[]>([]);
-  const [filteredProducts2, setFilteredProducts2] = useState<Products[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductNube[]>([]);
+  const [filteredProducts2, setFilteredProducts2] = useState<ProductNube[]>([]);
 
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [searchTerm2, setSearchTerm2] = useState<string>('');
   const [cambio, setCambio] = useState(false);
+
+  const [selectedProduct, setSelectedProduct] = useState<ProductNube>();
+  useEffect(() => {
+    if (selectedProduct) {
+      setVariants(selectedProduct?.variants);
+    }
+  }, [selectedProduct]);
+
+  const [filteredVariants, setFilteredVariants] = useState<Variant[]>([]);
+  const [variants, setVariants] = useState<Variant[]>([]);
+
+  const [selectedVariant, setSelectedVariant] = useState('');
 
   const params = useParams();
   const router = useRouter();
@@ -237,27 +243,17 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     }
   };
 
-  useEffect(() => {
-    const fetchProd = async () => {
-      const res = await fetch(`${BASE_URL}/products`);
-      const productsRes = await res.json();
-      setProducts(productsRes);
-    };
+  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = event.target.value;
+  //   setSearchTerm(value);
 
-    fetchProd();
-  }, []);
+  //   // Filtrar los productos por nombre
+  //   const filtered = products.filter((product) =>
+  //     product.name.es.toLowerCase().includes(value.toLowerCase())
+  //   );
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setSearchTerm(value);
-
-    // Filtrar los productos por nombre
-    const filtered = products.filter((product) =>
-      product.name.toLowerCase().includes(value.toLowerCase())
-    );
-
-    setFilteredProducts(filtered); // Guardar productos filtrados
-  };
+  //   setFilteredProducts(filtered); // Guardar productos filtrados
+  // };
   return (
     <>
       <AlertModal
@@ -311,7 +307,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                   <FormLabel>Producto</FormLabel>
                   <FormControl>
                     <div style={{ position: 'relative' }}>
-                      {/* Contenedor padre con posición relativa */}
                       <Input
                         autoComplete="off"
                         {...field}
@@ -324,7 +319,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                           } else {
                             setFilteredProducts(
                               products.filter((product) =>
-                                product.name
+                                product.name.es
                                   .toLowerCase()
                                   .includes(e.target.value.toLowerCase())
                               )
@@ -342,17 +337,17 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                             padding: 0,
                             margin: 0,
                             backgroundColor: 'black',
-                            maxHeight: '200px', // Limita la altura máxima (ajusta según el tamaño de los elementos)
-                            overflowY: 'auto' // Activa el scroll vertical cuando excede la altura máxima
+                            maxHeight: '200px',
+                            overflowY: 'auto'
                           }}
                         >
-                          {/* Estilos para la lista */}
                           {filteredProducts.map((product) => (
                             <li
-                              key={product._id}
+                              key={product.id}
                               onClick={() => {
-                                setSearchTerm(product.name);
-                                form.setValue('product', product.name);
+                                setSearchTerm(product.name.es);
+                                form.setValue('product', product.name.es);
+                                setSelectedProduct(product); // Seleccionamos el producto y actualizamos variantes
                                 setFilteredProducts([]);
                               }}
                               style={{ padding: '8px', cursor: 'pointer' }}
@@ -365,7 +360,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                                   'transparent')
                               }
                             >
-                              {product.name}
+                              {product.name.es}
                             </li>
                           ))}
                         </ul>
@@ -376,6 +371,61 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                 </FormItem>
               )}
             />
+
+            {/* Select para mostrar variantes si hay variantes disponibles */}
+            {variants.length > 0 && (
+              <FormField
+                control={form.control}
+                name="variant"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Seleccionar variante</FormLabel>
+                    <FormControl>
+                      <Select
+                        disabled={loading}
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger className="overflow-hidden">
+                          <SelectValue
+                            defaultValue={field.value}
+                            placeholder="Selecciona una variante"
+                          />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-52 ">
+                          {variants.map((variant) => (
+                            <SelectItem key={variant.sku} value={variant.sku}>
+                              <div className="flex flex-col">
+                                <span>SKU: {variant.sku}</span>
+                                {variant.values.map((value, index) => (
+                                  <span key={index}>
+                                    {value.en || value.es || value.pt}{' '}
+                                  </span>
+                                ))}
+                                <span>Precio: ${variant.price}</span>
+                                {variant.promotional_price && (
+                                  <span className="text-red-500">
+                                    Promoción: ${variant.promotional_price}
+                                  </span>
+                                )}
+                                <span>
+                                  Stock:{' '}
+                                  {variant.stock > 0
+                                    ? variant.stock
+                                    : 'Agotado'}
+                                </span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
@@ -539,7 +589,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                             } else {
                               setFilteredProducts2(
                                 products.filter((product) =>
-                                  product.name
+                                  product.name.es
                                     .toLowerCase()
                                     .includes(e.target.value.toLowerCase())
                                 )
@@ -557,16 +607,19 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                               padding: 0,
                               margin: 0,
                               backgroundColor: 'black',
-                              maxHeight: '200px', // Limita la altura máxima
-                              overflowY: 'auto' // Activa el scroll vertical
+                              maxHeight: '200px',
+                              overflowY: 'auto'
                             }}
                           >
                             {filteredProducts2.map((product) => (
                               <li
-                                key={product._id}
+                                key={product.id}
                                 onClick={() => {
-                                  setSearchTerm2(product.name);
-                                  form.setValue('productChange', product.name); // Actualiza el valor correcto en el formulario
+                                  setSearchTerm2(product.name.es);
+                                  form.setValue(
+                                    'productChange',
+                                    product.name.es
+                                  ); // Actualiza el valor correcto en el formulario
                                   setFilteredProducts2([]);
                                 }}
                                 style={{ padding: '8px', cursor: 'pointer' }}
@@ -579,7 +632,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                                     'transparent')
                                 }
                               >
-                                {product.name}
+                                {product.name.es}
                               </li>
                             ))}
                           </ul>

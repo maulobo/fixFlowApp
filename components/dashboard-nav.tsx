@@ -19,6 +19,10 @@ interface DashboardNavProps {
   isMobileNav?: boolean;
 }
 
+function isValidIcon(icon: string): icon is keyof typeof Icons {
+  return icon in Icons;
+}
+
 export function DashboardNav({
   items,
   setOpen,
@@ -35,7 +39,9 @@ export function DashboardNav({
     <nav className="grid items-start gap-2">
       <TooltipProvider>
         {items.map((item, index) => {
-          const Icon = Icons[item.icon || 'arrowRight'];
+          const Icon = isValidIcon(item.icon)
+            ? Icons[item.icon]
+            : Icons['arrowRight'];
           return (
             item.href && (
               <Tooltip key={index}>

@@ -1,6 +1,7 @@
 import mongoose, { Document, Model } from 'mongoose';
 
 export interface IUser extends Document {
+  _id: string; // Agregar la propiedad `id`
   name: string;
   email: string;
   password: string;
@@ -12,6 +13,12 @@ export interface IUser extends Document {
 }
 
 const userSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+    unique: true,
+    default: () => new mongoose.Types.ObjectId().toString() // Genera un ID único
+  },
   name: {
     type: String,
     required: true,
@@ -44,9 +51,15 @@ const userSchema = new mongoose.Schema({
     default: Date.now
   },
   updatedAt: {
-    type: Date,
+    type: Number,
     default: Date.now
   }
+});
+
+// Middleware para actualizar el campo `updatedAt` cada vez que se guarda un documento
+userSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
 });
 
 export const getUserModel = (): Model<IUser> => {

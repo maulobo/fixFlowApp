@@ -31,7 +31,7 @@ export default function ClaimReason() {
       try {
         const response = await fetch(`${BASE_URL}/dashboard-data`);
         const result = await response.json();
-        setData(result.countClaimReason);
+        setData(result.countClaimReason.slice(0, 4));
       } catch (error) {
         console.error('Error fetching claim reasons:', error);
       }
@@ -42,7 +42,7 @@ export default function ClaimReason() {
 
   return (
     <Card className="">
-      <CardContent className="flex gap-4 p-4 pb-2">
+      <CardContent className="flex  max-h-[300px] gap-4 p-4 pb-2 ">
         <ChartContainer
           config={{
             'Error empaquetado': {
@@ -74,7 +74,7 @@ export default function ClaimReason() {
               color: 'hsl(var(--color-Sin stock))'
             }
           }}
-          className="h-[140px] w-full"
+          className="max-h-[250px] w-full"
         >
           <BarChart
             margin={{
@@ -117,11 +117,8 @@ export default function ClaimReason() {
           {data.map((item) => (
             <div key={item._id} className="grid flex-1 auto-rows-min gap-0.5">
               <div className="text-xs text-muted-foreground">{item._id}</div>
-              <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+              <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
                 {item.count}
-                <span className="text-sm font-normal text-muted-foreground">
-                  items
-                </span>
               </div>
               <Separator orientation="vertical" className="mx-2 h-10 w-px" />
             </div>

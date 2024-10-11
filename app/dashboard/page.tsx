@@ -1,5 +1,9 @@
+import { auth } from '@/auth';
+import authConfig from '@/auth.config';
+import BlockArea from '@/components/block/block-area';
 import ClaimReason from '@/components/block/block-claim-reason';
 import BlockMonthlyChart from '@/components/block/block-monthly-chart';
+import BlockThreeCircle from '@/components/block/block-three-circle';
 import { LineDots } from '@/components/charts/line-dots-graph';
 import { CalendarDateRangePicker } from '@/components/date-range-picker';
 import PageContainer from '@/components/layout/page-container';
@@ -8,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fetchData } from '@/lib/fetchData';
-import { Plus } from 'lucide-react';
 
 export default async function page({
   searchParams
@@ -23,13 +26,14 @@ export default async function page({
     startDate && endDate ? `?startDate=${startDate}&endDate=${endDate}` : ''
   }`;
   const data = await fetchData(query);
+  const session = await auth();
 
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-2">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-2xl font-bold tracking-tight">
-            Hi, Welcome back 👋
+            Bienvenido de vuelta {`${session?.user?.name}`}👋
           </h2>
           <div className="hidden items-center space-x-2 md:flex">
             <CalendarDateRangePicker />
@@ -157,8 +161,89 @@ export default async function page({
                 </CardContent>
               </Card>
             </div>
-            <div className="col-span-4 md:col-span-5">
-              <ClaimReason />
+            {/* motivo del error y three circle */}
+            <div className="grid grid-cols-4 gap-4 md:grid-rows-4">
+              <div className="col-span-4 md:col-span-3 md:row-span-4">
+                <ClaimReason />
+              </div>
+              <div className="col-span-4 md:col-span-1 md:row-span-4">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
+                    >
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">Costos de errores</div>
+                    <p className="text-xs text-muted-foreground">$ en pesos</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Gastos en errores
+                    </CardTitle>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
+                    >
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      $
+                      {data.recentComplaints
+                        ? data.costsAndLosses.totalErrorCost
+                        : 'No data'}
+                    </div>
+                    <p className="text-xs text-muted-foreground">Pesos</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Gastos en envios
+                    </CardTitle>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
+                    >
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      $
+                      {data.recentComplaints
+                        ? data.costsAndLosses.totalShippingsCost
+                        : 'No data'}
+                    </div>
+                    <p className="text-xs text-muted-foreground">Pesos</p>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
             {/* grafico month y 3 cards */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4 lg:grid-cols-4">
@@ -166,86 +251,8 @@ export default async function page({
                 {/* <BlockMonthlyChart /> */}
                 <LineDots />
                 <div>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        className="h-4 w-4 text-muted-foreground"
-                      >
-                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                      </svg>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">
-                        Costos de errores
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        $ en pesos
-                      </p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Gastos en errores
-                      </CardTitle>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        className="h-4 w-4 text-muted-foreground"
-                      >
-                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                      </svg>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">
-                        $
-                        {data.recentComplaints
-                          ? data.costsAndLosses.totalErrorCost
-                          : 'No data'}
-                      </div>
-                      <p className="text-xs text-muted-foreground">Pesos</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Gastos en envios
-                      </CardTitle>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        className="h-4 w-4 text-muted-foreground"
-                      >
-                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                      </svg>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">
-                        $
-                        {data.recentComplaints
-                          ? data.costsAndLosses.totalShippingsCost
-                          : 'No data'}
-                      </div>
-                      <p className="text-xs text-muted-foreground">Pesos</p>
-                    </CardContent>
-                  </Card>
+                  <BlockThreeCircle />
+                  <BlockArea />
                 </div>
               </div>
             </div>

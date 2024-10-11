@@ -18,7 +18,7 @@ export default auth((req) => {
   // Redirect to login if not authenticated and trying to access protected routes
   if (!isLoggedIn && nextUrl.pathname.startsWith('/dashboard')) {
     console.log('Unauthenticated user, redirecting to login');
-    const loginUrl = new URL('/signin', nextUrl);
+    const loginUrl = new URL('/', nextUrl);
     loginUrl.searchParams.set('from', nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }
@@ -32,5 +32,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ['/dashboard/:path*']
+  matcher: ['/', '/dashboard/:path*']
 };

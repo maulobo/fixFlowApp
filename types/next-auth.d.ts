@@ -7,7 +7,9 @@ declare module 'next-auth' {
   }
 
   interface CredentialsInputs {
+    name: string;
     email: string;
     password: string;
+    _id: string;
   }
 }

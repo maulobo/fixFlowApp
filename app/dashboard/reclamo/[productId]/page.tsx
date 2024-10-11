@@ -1,20 +1,24 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { ComplaintForm } from '@/components/forms/complaint-form';
-
 import PageContainer from '@/components/layout/page-container';
 import UptadeHistory from '@/components/tables/update-history';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { BASE_URL } from '@/constants/data';
-import axios from 'axios';
+import { fetchProducts } from '@/lib/fetchData';
+import { ProductNube } from '@/types/types-tienda-nube';
+
 import React from 'react';
 
-const breadcrumbItems = [
-  { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Complaint', link: '/dashboard/complaint' },
-  { title: 'Create', link: '/dashboard/complaint/create' }
-];
-
 export default async function Page({ params }: any) {
+  const breadcrumbItems = [
+    { title: 'Dashboard', link: '/dashboard' },
+    { title: 'Complaint', link: '/dashboard/complaint' },
+    {
+      title: `${params.productId === 'new' ? 'Create' : 'Edit'}`,
+      link: `/dashboard/complaint/${
+        params.productId == 'new' ? 'Create' : 'edit'
+      }`
+    }
+  ];
   const { productId } = params;
 
   let initialData = null;
@@ -26,21 +30,31 @@ export default async function Page({ params }: any) {
         cache: 'no-store'
       });
       const res = await response.json();
+      if (res.success === false) return;
 
       initialData = await res.complaint;
-
       history = await res.updateHistory;
     } catch (error) {
       console.error('Error fetching complaint data:', error);
     }
   }
+  const products: ProductNube[] = await fetchProducts();
 
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
-        <ComplaintForm initialData={initialData} key={null} />
+        {products.length > 1 ? (
+          <ComplaintForm
+            initialData={initialData}
+            products={products}
+            key={null}
+          />
+        ) : (
+          <p>Loading...</p>
+        )}
       </div>
+      {/* si hay data inicial entonces devuelve historial */}
       {initialData ? <UptadeHistory history={history} /> : null}
     </PageContainer>
   );

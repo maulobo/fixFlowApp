@@ -20,8 +20,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
+
   return (
-    <html lang="en">
+    <html lang="es">
       <body
         className={`${inter.className} overflow-hidden `}
         suppressHydrationWarning={true}

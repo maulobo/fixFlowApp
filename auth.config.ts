@@ -1,9 +1,11 @@
 import { CredentialsInputs, NextAuthConfig } from 'next-auth';
-import CredentialProvider from 'next-auth/providers/credentials';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
 import { z } from 'zod';
 import { connectdb } from './lib/dbConnect';
 import { getUserModel } from './schema/UserSchema';
+import { compare } from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const authConfig = {
   providers: [
@@ -11,13 +13,16 @@ const authConfig = {
       clientId: process.env.GITHUB_ID ?? '',
       clientSecret: process.env.GITHUB_SECRET ?? ''
     }),
-    CredentialProvider({
+    CredentialsProvider({
       credentials: {
         email: {
           type: 'email'
         },
         password: {
           type: 'password'
+        },
+        name: {
+          type: 'string'
         }
       },
       async authorize(credentials, req) {
@@ -49,22 +54,55 @@ const authConfig = {
         }
 
         const user = await getUser(email);
+        // console.log(user);
+        if (!process.env.JWT_SECRET) {
+          throw new Error(
+            'JWT_SECRET is not defined in the environment variables'
+          );
+        }
 
         if (user) {
-          // Aquí deberías verificar la contraseña
-          // Por ejemplo: if (await bcrypt.compare(password, user.password)) {
-          //   return user;
-          // }
-          return user;
+          const isPasswordValid = await compare(password, user.password);
+          // console.log(isPasswordValid);
+          if (!isPasswordValid) {
+            throw new Error('Invalid password');
+          }
+          // Asegúrate de que aquí obtienes el ID del usuario correctamente
+          return {
+            id: user._id.toString(), // Asegúrate de que `user._id` sea un string
+            email: user.email,
+            name: user.name // Si tienes un campo `name`, también puedes devolverlo
+          };
         } else {
           return null;
         }
       }
     })
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      // Si el usuario está autenticado, guarda el ID en el token
+      if (user) {
+        token.id = user.id; // Aquí guardamos el ID del usuario
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Agrega el ID y otros datos al objeto de sesión
+      if (token) {
+        session.user.id = token.id as string; // Guarda el ID del usuario en la sesión
+      }
+      return session;
+    }
+  },
+  session: {
+    strategy: 'jwt', // Usar JWT para manejar las sesiones
+    maxAge: 30 * 60, // 30 minutos en segundos
+    updateAge: 24 * 60 * 60 // Opcional: refrescar sesión cada 24 horas
+  },
   pages: {
-    signIn: '/', //signin page
-    newUser: '/signup'
+    signIn: '/signin', // Página de inicio de sesión
+    newUser: '/signup' // Página de registro
   },
   secret: process.env.NEXTAUTH_SECRET
 } satisfies NextAuthConfig;

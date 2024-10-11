@@ -22,6 +22,13 @@ export type NavItem = {
   description?: string;
 };
 
+export type Producto = {
+  _id: string;
+  name: string;
+  category: string;
+  description: string;
+};
+
 export interface NavItemWithChildren extends NavItem {
   items: NavItemWithChildren[];
 }

@@ -209,10 +209,16 @@ export const updateNavItemsWithPendingCount = async () => {
         icon: 'post',
         label: 'employee'
       },
+      // {
+      //   title: 'Profile',
+      //   href: '/dashboard/profile',
+      //   icon: 'profile',
+      //   label: 'profile'
+      // },
       {
-        title: 'Profile',
-        href: '/dashboard/profile',
-        icon: 'profile',
+        title: 'Products',
+        href: '/dashboard/productos',
+        icon: 'product',
         label: 'profile'
       },
       {
