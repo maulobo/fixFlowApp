@@ -53,11 +53,9 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
   const { data: session, status } = useSession();
   const [filteredProducts, setFilteredProducts] = useState<ProductNube[]>([]);
   const [filteredProducts2, setFilteredProducts2] = useState<ProductNube[]>([]);
-
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [searchTerm2, setSearchTerm2] = useState<string>('');
   const [cambio, setCambio] = useState(false);
-
   const [selectedProduct, setSelectedProduct] = useState<ProductNube>();
   useEffect(() => {
     if (selectedProduct) {
@@ -65,10 +63,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     }
   }, [selectedProduct]);
 
-  const [filteredVariants, setFilteredVariants] = useState<Variant[]>([]);
   const [variants, setVariants] = useState<Variant[]>([]);
-
-  const [selectedVariant, setSelectedVariant] = useState('');
 
   const params = useParams();
   const router = useRouter();
@@ -284,6 +279,38 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
           <div className="gap-8 md:grid md:grid-cols-3">
             <FormField
               control={form.control}
+              name="claimReasons"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Razon del reclamo</FormLabel>
+                  <FormControl>
+                    <Select
+                      disabled={loading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Select a reason"
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {claimReasons.map((reason) => (
+                          <SelectItem key={reason} value={reason}>
+                            {reason}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="orderNumber"
               render={({ field }) => (
                 <FormItem>
@@ -387,7 +414,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                         value={field.value}
                         defaultValue={field.value}
                       >
-                        <SelectTrigger className="overflow-hidden">
+                        <SelectTrigger className="overflow-hidden align-top">
                           <SelectValue
                             defaultValue={field.value}
                             placeholder="Selecciona una variante"
@@ -461,38 +488,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="claimReasons"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Razon del reclamo</FormLabel>
-                  <FormControl>
-                    <Select
-                      disabled={loading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a reason"
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {claimReasons.map((reason) => (
-                          <SelectItem key={reason} value={reason}>
-                            {reason}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <FormField
               control={form.control}
               name="status"

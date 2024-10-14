@@ -29,16 +29,20 @@ export default function ClaimReason() {
   useEffect(() => {
     const fetchClaimReasons = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/dashboard-data`);
+        const response = await fetch(`${BASE_URL}/dashboard-data`, {
+          cache: 'no-store'
+        });
         const result = await response.json();
+
         setData(result.countClaimReason.slice(0, 4));
       } catch (error) {
         console.error('Error fetching claim reasons:', error);
       }
     };
-
+    // console.log(data);
     fetchClaimReasons();
   }, []);
+  // console.log(data);
 
   return (
     <Card className="">

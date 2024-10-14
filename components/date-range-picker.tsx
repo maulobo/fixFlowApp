@@ -8,8 +8,8 @@ import {
 } from '@/components/ui/popover';
 import { BASE_URL } from '@/constants/data';
 import { cn } from '@/lib/utils';
-import { CalendarIcon } from '@radix-ui/react-icons';
-import { addDays, format } from 'date-fns';
+import { CalendarIcon, UpdateIcon } from '@radix-ui/react-icons';
+import { addDays, format, previousDay } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { DateRange } from 'react-day-picker';
@@ -20,22 +20,20 @@ export function CalendarDateRangePicker({
   className?: string;
 }) {
   const router = useRouter();
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(), // Establece la fecha de hoy
-    to: addDays(new Date(), 20) // Agrega 20 días a la fecha actual
-  });
+  const [date, setDate] = React.useState<DateRange | undefined>(undefined);
 
   const handleFetch = async () => {
     if (date?.from && date?.to) {
-      const startDate = format(date.from, 'yyyy-MM-dd');
-      const endDate = format(date.to, 'yyyy-MM-dd');
-      router.push(`/dashboard?from=${startDate}&to=${endDate}`);
+      const startDate = date.from;
+      const endDate = date.to;
+      router.refresh();
+      router.push(`/dashboard?startDate=${startDate}&endDate=${endDate}`);
       router.refresh();
     }
   };
 
   return (
-    <div className={cn('grid gap-2', className)}>
+    <div className={cn('flex ', className)}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -73,7 +71,7 @@ export function CalendarDateRangePicker({
         </PopoverContent>
       </Popover>
       <Button onClick={handleFetch} disabled={!date?.from || !date?.to}>
-        Actualizar datos
+        <UpdateIcon />
       </Button>
     </div>
   );
