@@ -6,6 +6,8 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { ChartContainer } from '@/components/ui/chart';
 import { Separator } from '@/components/ui/separator';
 import { BASE_URL } from '@/constants/data';
+import { useFetchDataMine } from '@/hooks/useFetchMain';
+import { useSession } from 'next-auth/react';
 
 interface ClaimReasonData {
   _id: string;
@@ -23,26 +25,21 @@ const colorMap: { [key: string]: string } = {
   Retorno: 'hsl(var(--chart-8))'
 };
 
+type Data = {};
+
 export default function ClaimReason() {
+  const session = useSession();
+
   const [data, setData] = useState<ClaimReasonData[]>([]);
 
   useEffect(() => {
-    const fetchClaimReasons = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/dashboard-data`, {
-          cache: 'no-store'
-        });
-        const result = await response.json();
-
-        setData(result.countClaimReason.slice(0, 4));
-      } catch (error) {
-        console.error('Error fetching claim reasons:', error);
-      }
+    const asyncRecipt = async () => {
+      const result = await useFetchDataMine(session.data?.sessionToken);
+      const dataClaim = result.countClaimReason.slice(0, 4);
+      setData(dataClaim);
     };
-    // console.log(data);
-    fetchClaimReasons();
+    asyncRecipt();
   }, []);
-  // console.log(data);
 
   return (
     <Card className="">

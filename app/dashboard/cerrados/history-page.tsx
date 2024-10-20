@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: ''
 };
 
-export default function TaskPage({ historyComplaints }: any) {
+export default function HistoyPage({ historyComplaints }: any) {
   return (
     <>
       <div className="flex h-full flex-1 flex-col space-y-8 p-8 md:flex">

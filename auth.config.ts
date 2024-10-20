@@ -46,15 +46,15 @@ const authConfig = {
             await connectdb();
             const User = getUserModel();
             const user = await User.findOne({ email });
+
             return user;
           } catch (error) {
-            console.log('Failed to find user:', error);
+            console.error('Failed to find user:', error);
             throw new Error('Failed to find user');
           }
         }
 
         const user = await getUser(email);
-        // console.log(user);
         if (!process.env.JWT_SECRET) {
           throw new Error(
             'JWT_SECRET is not defined in the environment variables'
@@ -63,7 +63,7 @@ const authConfig = {
 
         if (user) {
           const isPasswordValid = await compare(password, user.password);
-          // console.log(isPasswordValid);
+
           if (!isPasswordValid) {
             throw new Error('Invalid password');
           }
@@ -81,16 +81,28 @@ const authConfig = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // Si el usuario está autenticado, guarda el ID en el token
       if (user) {
-        token.id = user.id; // Aquí guardamos el ID del usuario
+        const payload = {
+          id: user.id,
+          email: user.email,
+          name: user.name
+        };
+
+        const customToken = jwt.sign(payload, process.env.JWT_SECRET!, {
+          expiresIn: '120m',
+          algorithm: 'HS256'
+        });
+
+        token.customToken = customToken;
       }
-      return token;
+      return { ...token, ...user };
     },
-    async session({ session, token }) {
-      // Agrega el ID y otros datos al objeto de sesión
+    async session({ session, token, user }) {
       if (token) {
-        session.user.id = token.id as string; // Guarda el ID del usuario en la sesión
+        session.user.id = token.id as string; // ID del usuario
+        session.user.name = token.name as string; // Nombre del usuario
+        session.user.email = token.email as string; // Email del usuario
+        session.sessionToken = token.customToken as string; // Token personalizado
       }
       return session;
     }

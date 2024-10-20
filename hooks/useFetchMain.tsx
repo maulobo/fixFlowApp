@@ -1,4 +1,7 @@
 'use client';
+import { BASE_URL } from '@/constants/data';
+import { Session } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
 interface UseFetchDataResult<T> {
@@ -6,6 +9,22 @@ interface UseFetchDataResult<T> {
   loading: boolean;
   error: string | null;
 }
+
+export const useFetchDataMine = async (token: string | null | undefined) => {
+  try {
+    const response = await fetch(`${BASE_URL}/dashboard-data`, {
+      cache: 'no-store',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error fetching claim reasons:', error);
+  }
+};
 
 export function useFetchData<T>(url: string): UseFetchDataResult<T> {
   const [data, setData] = useState<T | null>(null);

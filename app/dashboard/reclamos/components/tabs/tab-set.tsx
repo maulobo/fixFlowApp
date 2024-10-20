@@ -12,7 +12,6 @@ interface Props {
 }
 
 export default async function TabSet({ searchParams }: Props) {
-  console.log(searchParams);
   const { startDate, endDate } = searchParams;
 
   const data = await fetchData(
@@ -75,9 +74,7 @@ export default async function TabSet({ searchParams }: Props) {
                 ? data.resolvedComplaints.length
                 : 'No data'}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Maso alg asiu mi rey
-            </p>
+            <p className="text-xs text-muted-foreground">comparativas</p>
           </CardContent>
         </Card>
         <Card>
@@ -102,7 +99,7 @@ export default async function TabSet({ searchParams }: Props) {
             <div className="text-2xl font-bold">
               {data.recentComplaints ? data.humanErrors : 'No data'}
             </div>
-            <p className="text-xs text-muted-foreground">Huamintosss</p>
+            <p className="text-xs text-muted-foreground">+21,4%</p>
           </CardContent>
         </Card>
         <Card>

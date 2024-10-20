@@ -7,18 +7,11 @@ import { TabsContent } from '@/components/ui/tabs';
 import { fetchData } from '@/lib/fetchData';
 import React from 'react';
 
-export default async function TabMonth() {
-  const date = new Date();
-  const endDate = new Date(date);
-  const startDate = new Date(date);
-  startDate.setDate(date.getDate() - 30);
-
-  const data = await fetchData(
-    `dashboard-data/?startDate=${startDate}&endDate=${endDate}`
-  );
+export default async function TabMain() {
+  const data = await fetchData(`dashboard-data/`);
 
   return (
-    <TabsContent value="month" className="space-y-4">
+    <TabsContent value="overview" className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

@@ -86,5 +86,6 @@ export interface ProductNube {
   free_shipping: boolean;
   updated_at: string;
   variants: Variant[];
+  variants2: Variant[];
   tags: string;
 }

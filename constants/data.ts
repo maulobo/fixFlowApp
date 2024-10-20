@@ -185,8 +185,8 @@ export const updateNavItemsWithPendingCount = async () => {
         label: 'Dashboard'
       },
       {
-        title: 'Reclamo',
-        href: '/dashboard/reclamo/new',
+        title: 'Reclamos',
+        href: '/dashboard/reclamos',
         icon: 'page',
         label: 'products'
       },

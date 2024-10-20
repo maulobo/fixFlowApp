@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       verificationToken,
       emailVerified: false
     });
-    console.log(newUser);
+    // console.log(newUser);
 
     await newUser.save();
 

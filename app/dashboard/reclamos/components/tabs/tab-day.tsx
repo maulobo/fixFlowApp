@@ -11,19 +11,19 @@ export default async function TabDay() {
   const date = new Date(); // Fecha y hora actual
   const endDate = new Date(date); // Copia la fecha actual para el endDate
   const startDate = new Date(date);
-  startDate.setDate(date.getDate() - 1);
+  startDate.setHours(0, 0, 0, 0);
+
   const data = await fetchData(
-    `dashboard-data/?startDate=${startDate}&endDate=${endDate}`
+    `complaints/daily?startDate=${startDate}&endDate=${endDate}`
   );
+  console.log(data);
 
   return (
     <TabsContent value="day" className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Reclamos Diarios
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Reclamos</CardTitle>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

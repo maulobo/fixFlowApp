@@ -22,24 +22,13 @@ export const updateHistorySchema = z.object({
 
 export const formSchema = z.object({
   orderNumber: z.string().min(1, 'El número de orden es obligatorio.'),
-  // dateTime: z.date().default(new Date()), // Fecha de creación por defecto a la fecha actual
-  comments: z.string().optional(), // Comentarios opcionales
+  comments: z.string().optional(),
   product: z.string().min(1, 'El producto es obligatorio.'),
+  product2: z.string().optional(),
   trackingCode: z.string().min(1, 'El código de seguimiento es obligatorio.'),
   variant: z.string().min(1, 'El producto es obligatorio'),
-  claimReasons: z
-    .enum([
-      'Error empaquetado',
-      'Cambio despacho',
-      'Devolucion',
-      'Error Logistica',
-      'Otro',
-      'Sin Stock',
-      'Garantia',
-      'Retorno',
-      'Cambio previo al envio'
-    ])
-    .optional(),
+  variant2: z.string().optional(),
+  claimReasons: z.string().min(1, 'El producto es obligatorio'),
   status: z
     .enum(['Hablado', 'No Hablado', 'Empaquetado'])
     .default('No Hablado'),
@@ -50,31 +39,20 @@ export const formSchema = z.object({
       'Devolucion',
       'Regalo',
       'Cambio de producto',
-      'Logistica inversa'
+      'Logistica inversa',
+      'otro'
     ])
     .optional(),
   shippingCost: z
     .any()
     .optional()
     .transform((value) => (value ? Number(value) : undefined)), // Costo de envío opcional
-  // photo: z
-  //   .array(
-  //     z.object({
-  //       url: z.string(),
-  //       name: z.string()
-  //     })
-  //   )
-  //   .optional(), // URL o path de la foto opcional
   errorPrice: z
     .any()
     .optional()
     .transform((value) => (value ? Number(value) : undefined)), // Cantidad opcional
   shippingType: z.string().optional(), // Tipo de envío opcional
-  detectionLocation: z.string().optional(), // Lugar de detección opcional
   customer: z.string().optional(), // Cliente opcional
-  // createdBy: z
-  //   .string()
-  //   .min(1, 'El usuario que creó el reclamo es obligatorio.'), // Referencia al usuario que creó el reclamo
   isClosed: z.boolean().default(false), // Campo booleano de cierre
   updatedBy: z.string().optional(), // Usuario que actualizó por última vez
   updateHistory: z.array(updateHistorySchema).optional(), // Historial de cambios opcional
