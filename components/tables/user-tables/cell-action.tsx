@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { BASE_URL } from '@/constants/data';
+import { useDeleteById } from '@/hooks/useFetchMain';
+
 import { Complaint } from '@/types/types-mine';
 
 import {
@@ -19,6 +21,7 @@ import {
   Trash,
   PercentCircle
 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -33,13 +36,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     'delete' | 'show' | 'hide' | 'spotlight' | 'unspotlight' | null
   >(null);
   const router = useRouter();
+  const session = useSession();
+  const token = session.data?.sessionToken;
 
   const onConfirm = async () => {
     setLoading(true);
     try {
       if (actionType === 'delete') {
-        console.log('Eliminando usuario', data._id);
-        await deleteProduct(data._id);
+        await useDeleteById(data._id, token);
       } else if (actionType === 'show') {
         console.log('Mostrando producto', data._id);
         await updateProductVisibility(data._id, true);
@@ -80,7 +84,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     }
 
     const result = await res.json();
-    console.log(result);
+
     return result;
   };
   const updateProductSpotlight = async (
@@ -101,35 +105,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       }
 
       const result = await res.json();
-      console.log(result);
+
       return result;
     } catch (error) {
       console.error('Error updating product:', error);
       throw error;
     }
   };
-  const deleteProduct = async (productId: string) => {
-    try {
-      const res = await fetch(`${BASE_URL}/delete/${productId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ productId })
-      });
-
-      if (!res.ok) {
-        throw new Error('failed to delete product');
-      }
-
-      const result = await res.json();
-      console.log(result);
-      return result;
-    } catch (error) {
-      console.error('Error updating product:', error);
-      throw error;
-    }
-  };
+  const deleteProduct = async (productId: string) => {};
 
   const onDelete = () => {
     setActionType('delete');
@@ -139,7 +122,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     setActionType('show');
     setOpen(true);
   };
-  const onHide = () => {
+  const onHide: any = () => {
     setActionType('hide');
     setOpen(true);
   };
@@ -170,7 +153,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/reclamo/${data._id}`)}
+            onClick={() => router.push(`/dashboard/reclamos/${data._id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

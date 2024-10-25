@@ -13,7 +13,7 @@ interface ProductsClientProps {
   data: Complaint[];
 }
 
-export const ProductClient: React.FC<ProductsClientProps> = ({ data }) => {
+export const PendingComplaints: React.FC<ProductsClientProps> = ({ data }) => {
   const router = useRouter();
 
   return (
@@ -32,7 +32,6 @@ export const ProductClient: React.FC<ProductsClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      {/* aca van las columnas y la data*/}
       <DataTable searchKey="orderNumber" columns={columns} data={data} />
     </>
   );

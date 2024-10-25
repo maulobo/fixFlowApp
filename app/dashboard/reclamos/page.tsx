@@ -3,7 +3,6 @@ import React from 'react';
 import PageContainer from '@/components/layout/page-container';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Heading } from '@/components/ui/heading';
-import { ButtonsComplaints } from './components/buttons-complaints';
 import ReclamosIndex from './components/reclamos-index';
 
 const breadcrumbItems = [

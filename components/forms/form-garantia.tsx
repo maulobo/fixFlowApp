@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import {
   Form,
@@ -18,7 +19,7 @@ import {
 import { ProductNube, Variant } from '@/types/types-tienda-nube';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Label } from '../ui/label';
+import { ca } from 'date-fns/locale';
 
 const solutionTypes = [
   'Reenvio',
@@ -47,9 +48,7 @@ export default function FormGarantia({
   const [cambio, setCambio] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductNube>();
   const [selectedProduct2, setSelectedProduct2] = useState<ProductNube>();
-
   const [variants, setVariants] = useState<Variant[]>([]);
-
   const [variants2, setVariants2] = useState<Variant[]>([]);
 
   useEffect(() => {
@@ -59,32 +58,23 @@ export default function FormGarantia({
   }, [selectedProduct]);
 
   useEffect(() => {
+    if (initialData) {
+      const { __v, ...dataWithoutVersion } = initialData; // Excluir '__v'
+      for (const key in dataWithoutVersion) {
+        form.setValue(key, dataWithoutVersion[key] || '');
+      }
+    }
+  }, [initialData, form]);
+
+  useEffect(() => {
     if (selectedProduct2) {
       setVariants2(selectedProduct2?.variants);
     }
   }, [selectedProduct2]);
 
-  const defaultValues = initialData || {
-    orderNumber: '',
-    dateTime: new Date(),
-    comments: '',
-    product: '',
-    trackingCode: '',
-    claimReasons: '',
-    status: 'No Hablado',
-    solutionType: '',
-    shippingCost: 0,
-    photo: '',
-    errorPrice: 0,
-    shippingType: '',
-    detectionLocation: '',
-    customer: '',
-    createdBy: '',
-    isClosed: false,
-    closedAt: null,
-    updatedBy: '',
-    updateHistory: []
-  };
+  if (initialData) {
+    type = initialData.type;
+  }
 
   return (
     <Form {...form}>
@@ -97,7 +87,7 @@ export default function FormGarantia({
               <FormItem>
                 <FormLabel>Tipo de reclamo</FormLabel>
                 <FormControl>
-                  <Input disabled value={field.value || type} />
+                  <Input disabled value={initialData?.claimReasons || type} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -111,10 +101,11 @@ export default function FormGarantia({
                 <FormLabel>Numero de Orden</FormLabel>
                 <FormControl>
                   <Input
-                    disabled={loading || initialData}
+                    disabled={loading || !!initialData?.orderNumber}
                     placeholder="Order Number"
                     {...field}
-                    value={field.value || ''}
+                    value={field.value || initialData?.orderNumber || ''}
+                    onChange={(e) => field.onChange(e.target.value)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -133,10 +124,12 @@ export default function FormGarantia({
                     <Input
                       autoComplete="off"
                       {...field}
+                      disabled={initialData}
                       placeholder="Search product"
-                      value={searchTerm}
+                      value={searchTerm || initialData?.product || ''}
                       onChange={(e) => {
                         setSearchTerm(e.target.value);
+                        field.onChange(e.target.value); // Aseguramos que el formulario maneje el cambio
                         if (e.target.value === '') {
                           setFilteredProducts([]);
                         } else {
@@ -169,7 +162,7 @@ export default function FormGarantia({
                             key={`${i}_${product.id}`}
                             onClick={() => {
                               setSearchTerm(product.name.es);
-                              form.setValue('product', product.name.es);
+                              form.setValue('product', product.name.es); // Setea el valor en el formulario
                               setSelectedProduct(product); // Seleccionamos el producto y actualizamos variantes
                               setFilteredProducts([]);
                             }}
@@ -195,58 +188,99 @@ export default function FormGarantia({
             )}
           />
 
-          {/* Select para mostrar variantes si hay variantes disponibles */}
-          {variants.length > 0 && (
-            <FormField
-              control={form.control}
-              name="variant"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Seleccionar variante</FormLabel>
-                  <FormControl>
-                    <Select
-                      disabled={loading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger className="overflow-hidden align-top">
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Selecciona una variante"
-                        />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-52 ">
-                        {variants.map((variant) => (
-                          <SelectItem key={variant.sku} value={variant.sku}>
-                            <div className="flex flex-col">
-                              <span>SKU: {variant.sku}</span>
-                              {variant.values.map((value, index) => (
-                                <span key={index}>
-                                  {value.en || value.es || value.pt}{' '}
-                                </span>
-                              ))}
-                              <span>Precio: ${variant.price}</span>
-                              {variant.promotional_price && (
-                                <span className="text-red-500">
-                                  Promoción: ${variant.promotional_price}
-                                </span>
-                              )}
-                              <span>
-                                Stock:{' '}
-                                {variant.stock > 0 ? variant.stock : 'Agotado'}
+          <FormField
+            control={form.control}
+            name="variant"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Seleccionar variante</FormLabel>
+                <FormControl>
+                  <Select
+                    disabled={initialData?.variant?.sku || initialData}
+                    onValueChange={field.onChange} // Pasa el objeto directamente
+                    value={field.value || initialData?.variant || ''} // Utiliza el objeto completo
+                  >
+                    <SelectTrigger className="overflow-hidden align-top">
+                      {/* Muestra el SKU o el placeholder */}
+                      <span>
+                        {field.value?.sku ||
+                          initialData?.variant?.sku ||
+                          'Selecciona una variante'}
+                      </span>
+                    </SelectTrigger>
+                    <SelectContent className="max-h-52">
+                      {variants.map((variant) => (
+                        <SelectItem key={variant.sku} value={variant.sku}>
+                          <div className="flex flex-col">
+                            <span>SKU: {variant.sku}</span>
+                            {variant.values.map((value, index) => (
+                              <span key={index}>
+                                {value.en || value.es || value.pt}{' '}
                               </span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
+                            ))}
+                            <span>Precio: ${variant.price}</span>
+                            {variant.promotional_price && (
+                              <span className="text-red-500">
+                                Promoción: ${variant.promotional_price}
+                              </span>
+                            )}
+                            <span>
+                              Stock:{' '}
+                              {variant.stock > 0 ? variant.stock : 'Agotado'}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cantidad</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    disabled={loading || initialData}
+                    placeholder="Cantidad"
+                    {...field}
+                    value={initialData?.quantity || field.value || ''}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value ? parseInt(e.target.value, 10) : ''
+                      )
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="shippingMode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Medio de envio</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={loading || initialData}
+                    placeholder="Medio de envio"
+                    {...field}
+                    value={initialData?.shippingMode || field.value || ''}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
@@ -256,10 +290,10 @@ export default function FormGarantia({
                 <FormLabel>Tracking Code</FormLabel>
                 <FormControl>
                   <Input
-                    disabled={loading || initialData}
+                    disabled={loading}
                     placeholder="N tracking"
                     {...field}
-                    value={field.value || ''}
+                    value={initialData?.trackingCode || field.value || ''}
                   />
                 </FormControl>
                 <FormMessage />
@@ -275,10 +309,10 @@ export default function FormGarantia({
                 <FormLabel>Comentarios</FormLabel>
                 <FormControl>
                   <Input
-                    disabled={loading || initialData}
+                    disabled={loading}
                     placeholder="Comments"
                     {...field}
-                    value={field.value || ' '}
+                    value={initialData?.comments || field.value || ' '}
                   />
                 </FormControl>
                 <FormMessage />
@@ -297,12 +331,12 @@ export default function FormGarantia({
                     disabled={loading}
                     onValueChange={field.onChange}
                     value={field.value}
-                    defaultValue={field.value}
+                    defaultValue={initialData?.status || field.value}
                   >
                     <SelectTrigger>
                       <SelectValue
                         defaultValue={field.value}
-                        placeholder="Select a status"
+                        placeholder="Seleccione"
                       />
                     </SelectTrigger>
                     <SelectContent>
@@ -337,13 +371,13 @@ export default function FormGarantia({
                         setCambio(false);
                       }
                     }}
-                    value={field.value}
+                    value={initialData?.solutionType || field.value}
                     defaultValue={field.value}
                   >
                     <SelectTrigger>
                       <SelectValue
                         defaultValue={field.value}
-                        placeholder="Select a solution"
+                        placeholder="Seleccione"
                       />
                     </SelectTrigger>
                     <SelectContent>
@@ -359,146 +393,147 @@ export default function FormGarantia({
               </FormItem>
             )}
           />
-          {cambio && (
-            <FormField
-              control={form.control}
-              name="product2"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Producto</FormLabel>
-                  <FormControl>
-                    <div style={{ position: 'relative' }}>
-                      <Input
-                        placeholder="Buscar nuevo producto"
-                        {...field}
-                        value={searchTerm2}
-                        onChange={(e) => {
-                          setSearchTerm2(e.target.value);
-                          if (e.target.value === '') {
-                            setFilteredProducts2([]);
-                          } else {
-                            setFilteredProducts2(
-                              products.filter((product: any) =>
-                                product.name.es
-                                  .toLowerCase()
-                                  .includes(e.target.value.toLowerCase())
-                              )
-                            );
-                          }
+
+          <FormField
+            control={form.control}
+            name="product2"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Producto</FormLabel>
+                <FormControl>
+                  <div style={{ position: 'relative' }}>
+                    <Input
+                      disabled={!cambio}
+                      placeholder="Buscar nuevo producto"
+                      {...field}
+                      value={searchTerm2 || initialData?.product2}
+                      onChange={(e) => {
+                        setSearchTerm2(e.target.value);
+                        field.onChange(e.target.value);
+                        if (e.target.value === '') {
+                          setFilteredProducts2([]);
+                        } else {
+                          setFilteredProducts2(
+                            products.filter((product: any) =>
+                              product.name.es
+                                .toLowerCase()
+                                .includes(e.target.value.toLowerCase())
+                            )
+                          );
+                        }
+                      }}
+                    />
+                    {filteredProducts2.length > 0 && (
+                      <ul
+                        style={{
+                          position: 'absolute',
+                          zIndex: 1,
+                          width: '100%',
+                          listStyle: 'none',
+                          padding: 0,
+                          margin: 0,
+                          backgroundColor: 'black',
+                          maxHeight: '200px',
+                          overflowY: 'auto'
                         }}
+                      >
+                        {filteredProducts2.map((product) => (
+                          <li
+                            key={product.id}
+                            onClick={() => {
+                              setSearchTerm2(product.name.es);
+                              setSelectedProduct2(product);
+                              setFilteredProducts2([]);
+                              form.setValue('product2', product.name.es);
+                            }}
+                            style={{ padding: '8px', cursor: 'pointer' }}
+                            onMouseEnter={(e) =>
+                              (e.currentTarget.style.backgroundColor =
+                                '#7d7d7d')
+                            }
+                            onMouseLeave={(e) =>
+                              (e.currentTarget.style.backgroundColor =
+                                'transparent')
+                            }
+                          >
+                            {product.name.es}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="variant2"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Seleccionar variante del nuevo producto</FormLabel>
+                <FormControl>
+                  <Select
+                    disabled={loading || !cambio}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="overflow-hidden align-top">
+                      <SelectValue
+                        defaultValue={field.value}
+                        placeholder="Selecciona una variante"
                       />
-                      {filteredProducts2.length > 0 && (
-                        <ul
-                          style={{
-                            position: 'absolute',
-                            zIndex: 1,
-                            width: '100%',
-                            listStyle: 'none',
-                            padding: 0,
-                            margin: 0,
-                            backgroundColor: 'black',
-                            maxHeight: '200px',
-                            overflowY: 'auto'
-                          }}
-                        >
-                          {filteredProducts2.map((product) => (
-                            <li
-                              key={product.id}
-                              onClick={() => {
-                                setSearchTerm2(product.name.es);
-                                setSelectedProduct2(product);
-                                setFilteredProducts2([]);
-                                form.setValue('product2', product.name.es);
-                              }}
-                              style={{ padding: '8px', cursor: 'pointer' }}
-                              onMouseEnter={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                  '#7d7d7d')
-                              }
-                              onMouseLeave={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                  'transparent')
-                              }
-                            >
-                              {product.name.es}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      {variants2.length > 0 && (
-                        <FormField
-                          control={form.control}
-                          name="variant2"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                Seleccionar variante del nuevo producto
-                              </FormLabel>
-                              <FormControl>
-                                <Select
-                                  disabled={loading}
-                                  onValueChange={field.onChange}
-                                  value={field.value}
-                                  defaultValue={field.value}
-                                >
-                                  <SelectTrigger className="overflow-hidden align-top">
-                                    <SelectValue
-                                      defaultValue={field.value}
-                                      placeholder="Selecciona una variante"
-                                    />
-                                  </SelectTrigger>
-                                  <SelectContent className="max-h-52">
-                                    {variants2.map((variant) => (
-                                      <SelectItem
-                                        key={variant.sku}
-                                        value={variant.sku}
-                                      >
-                                        <div className="flex flex-col">
-                                          <span>SKU: {variant.sku}</span>
-                                          {variant.values.map(
-                                            (value, index) => (
-                                              <span key={index}>
-                                                {value.en ||
-                                                  value.es ||
-                                                  value.pt}{' '}
-                                              </span>
-                                            )
-                                          )}
-                                          <span>Precio: ${variant.price}</span>
-                                          {variant.promotional_price && (
-                                            <span className="text-red-500">
-                                              Promoción: $
-                                              {variant.promotional_price}
-                                            </span>
-                                          )}
-                                          <span>
-                                            Stock:{' '}
-                                            {variant.stock > 0
-                                              ? variant.stock
-                                              : 'Agotado'}
-                                          </span>
-                                        </div>
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-52">
+                      {variants2.map((variant) => (
+                        <SelectItem key={variant.sku} value={variant.sku}>
+                          <div className="flex flex-col">
+                            <span>SKU: {variant.sku}</span>
+                            {variant.values.map((value, index) => (
+                              <span key={index}>
+                                {value.en || value.es || value.pt}{' '}
+                              </span>
+                            ))}
+                            <span>Precio: ${variant.price}</span>
+                            {variant.promotional_price && (
+                              <span className="text-red-500">
+                                Promoción: ${variant.promotional_price}
+                              </span>
+                            )}
+                            <span>
+                              Stock:{' '}
+                              {variant.stock > 0 ? variant.stock : 'Agotado'}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex gap-4">
+          <Button disabled={loading} type="submit">
+            {action}
+          </Button>
+          {initialData ? (
+            <Button
+              disabled={loading}
+              type="submit"
+              variant="solved"
+              onClick={markAsResolved}
+            >
+              Resuelto
+            </Button>
+          ) : (
+            ''
           )}
         </div>
-        <Button disabled={loading} type="submit">
-          {action}
-        </Button>
       </form>
     </Form>
   );

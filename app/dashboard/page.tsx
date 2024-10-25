@@ -5,7 +5,7 @@ import PageContainer from '@/components/layout/page-container';
 import { Button } from '@/components/ui/button';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { fetchData } from '@/lib/fetchData';
+import { fetchData } from '@/lib/actions';
 import TabMonth from './reclamos/components/tabs/tab-month';
 import TabWeek from './reclamos/components/tabs/tab-week';
 import TabDay from './reclamos/components/tabs/tab-day';

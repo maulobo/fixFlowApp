@@ -23,15 +23,16 @@ export const updateHistorySchema = z.object({
 export const formSchema = z.object({
   orderNumber: z.string().min(1, 'El número de orden es obligatorio.'),
   comments: z.string().optional(),
-  product: z.string().min(1, 'El producto es obligatorio.'),
+  product: z.string().min(1, 'El producto es obligatorio.').optional(),
   product2: z.string().optional(),
   trackingCode: z.string().min(1, 'El código de seguimiento es obligatorio.'),
-  variant: z.string().min(1, 'El producto es obligatorio'),
-  variant2: z.string().optional(),
+  variant: z.any(),
+  variant2: z.any().optional(),
   claimReasons: z.string().min(1, 'El producto es obligatorio'),
   status: z
     .enum(['Hablado', 'No Hablado', 'Empaquetado'])
     .default('No Hablado'),
+  quantity: z.number().optional(),
   solutionType: z
     .enum([
       'Reenvio',
@@ -51,9 +52,9 @@ export const formSchema = z.object({
     .any()
     .optional()
     .transform((value) => (value ? Number(value) : undefined)), // Cantidad opcional
-  shippingType: z.string().optional(), // Tipo de envío opcional
+  shippingMode: z.string().optional(), // Tipo de envío opcional
   customer: z.string().optional(), // Cliente opcional
-  isClosed: z.boolean().default(false), // Campo booleano de cierre
+  isClosed: z.string().optional(),
   updatedBy: z.string().optional(), // Usuario que actualizó por última vez
   updateHistory: z.array(updateHistorySchema).optional(), // Historial de cambios opcional
   productChange: z.string().optional()

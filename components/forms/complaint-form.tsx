@@ -1,10 +1,9 @@
 'use client';
-
 import * as z from 'zod';
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Trash } from 'lucide-react';
+import { CloudHail, Trash } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
@@ -19,9 +18,9 @@ import { BASE_URL } from '@/constants/data';
 import { AlertModal } from '../modal/alert-modal';
 
 import { ProductNube, Variant } from '@/types/types-tienda-nube';
-import FormMain from './form-main';
-import FormTest from './form-test';
+
 import FormGarantia from './form-garantia';
+import FormMain from './form-main';
 
 export const IMG_MAX_LIMIT = 3;
 
@@ -51,29 +50,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     : 'Complaint created.';
   const action = initialData ? 'Save changes' : 'Create';
 
-  const defaultValues = initialData || {
-    orderNumber: '',
-    dateTime: new Date(),
-    comments: '',
-    product: '',
-    trackingCode: '',
-    claimReasons: '',
-    status: 'No Hablado',
-    variant2: '',
-    solutionType: '',
-    shippingCost: 0,
-    photo: '',
-    errorPrice: 0,
-    shippingType: '',
-    detectionLocation: '',
-    customer: '',
-    createdBy: '',
-    isClosed: false,
-    closedAt: null,
-    updatedBy: '',
-    updateHistory: []
-  };
-
   const form = useForm<ComplaintFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -83,42 +59,47 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
 
   const onSubmit = async (data: ComplaintFormValues) => {
     console.log(data);
-    // try {
-    //   if (initialData) {
-    //     const res = await axios.put(
-    //       `${BASE_URL}/edit-complaint/${initialData._id}`,
-    //       data,
-    //       {
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //           'X-User-Id': session?.user?.email
-    //         }
-    //       }
-    //     );
-    //   } else {
-    //     await axios.post(`${BASE_URL}/add`, data, {
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         'X-User-Id': session?.user?.email
-    //       }
-    //     });
-    //   }
-    //   router.refresh();
-    //   router.push(`/dashboard/reclamo`);
-    //   toast({
-    //     variant: 'success',
-    //     title: 'Success',
-    //     description: toastMessage
-    //   });
-    // } catch (error: any) {
-    //   toast({
-    //     variant: 'destructive',
-    //     title: 'Error',
-    //     description: 'There was a problem with your request.'
-    //   });
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      if (initialData) {
+        const res = await axios.put(
+          `${BASE_URL}/edit-complaint/${initialData._id}`,
+          data,
+          {
+            headers: {
+              authorization: `Bearer ${session?.sessionToken}`,
+              'Content-Type': 'application/json',
+              'X-User-Id': session?.user?.email
+            }
+          }
+        );
+        console.log(res);
+      } else {
+        console.log('asfksafonafhoifjfoijas');
+        await axios.post(`${BASE_URL}/complaints`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${session?.sessionToken}`,
+            'X-User-Id': session?.user?.email
+          }
+        });
+      }
+      router.refresh();
+      router.push(`/dashboard/reclamo`);
+      toast({
+        variant: 'success',
+        title: 'Success',
+        description: toastMessage
+      });
+    } catch (error: any) {
+      console.log(error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: `${error?.response.data.error.errorResponse?.errmsg}`
+      });
+    } finally {
+      setLoading(false);
+    }
   };
   const {
     handleSubmit,
@@ -127,38 +108,36 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
   console.log(errors);
 
   const markAsResolved = async () => {
-    // Validar que los campos requeridos estén completos
-    const { errorPrice, shippingCost, solutionType, product } =
-      form.getValues();
-    console.log(errorPrice, shippingCost, solutionType, product);
-    if (!errorPrice || !shippingCost || !solutionType || !product) {
-      toast({
-        variant: 'destructive',
-        title: 'Incomplete Fields',
-        description:
-          'Please ensure all required fields are filled: error price, shipping cost, solution type, and product.'
-      });
-      return;
-    }
+    console.log('INITIAL', initialData);
+    const formValues = form.getValues();
+
+    // if (!errorPrice || !shippingCost || !solutionType || !product) {
+    //   toast({
+    //     variant: 'destructive',
+    //     title: 'Incomplete Fields',
+    //     description:
+    //       'Please ensure all required fields are filled: error price, shipping cost, solution type, and product.'
+    //   });
+    //   return;
+    // }
 
     try {
       setLoading(true);
-      await axios.put(
-        `${BASE_URL}/edit-complaint/${initialData._id}`,
+      console.log('FORM', formValues);
+
+      const res = await axios.put(
+        `${BASE_URL}/complaints/${initialData._id}`,
         {
-          ...initialData,
+          ...formValues,
           isClosed: true,
           status: 'Resuelto',
-          closedAt: new Date().toISOString(), // Fecha actual
-          errorPrice,
-          shippingCost,
-          solutionType,
-          product
+          closedAt: new Date().toISOString() // Fecha actual
         },
         {
           headers: {
             'Content-Type': 'application/json',
-            'X-User-Id': session?.user?.email
+            'X-User-Id': session?.user?.email,
+            authorization: `Bearer ${session?.sessionToken}`
           }
         }
       );
@@ -170,6 +149,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
         description: 'The complaint has been marked as resolved.'
       });
     } catch (error: any) {
+      console.log(error);
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -221,7 +201,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
       </div>
       <Separator />
 
-      <FormGarantia
+      <FormMain
         onSubmit={onSubmit}
         markAsResolved={markAsResolved}
         initialData={initialData}
@@ -231,17 +211,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
         action={action}
         type={type}
       />
-
-      {/* <FormTest
-        onSubmit={onSubmit}
-        markAsResolved={markAsResolved}
-        initialData={initialData}
-        products={products}
-        form={form}
-        loading={loading}
-        action={action}
-        type={type}
-      /> */}
     </>
   );
 };

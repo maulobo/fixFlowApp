@@ -52,3 +52,27 @@ export function useFetchData<T>(url: string): UseFetchDataResult<T> {
 
   return { data, loading, error };
 }
+
+export const useDeleteById = async (productId: any, token: any) => {
+  try {
+    const res = await fetch(`${BASE_URL}/complaints/${productId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ productId })
+    });
+
+    if (!res.ok) {
+      throw new Error('failed to delete product');
+    }
+
+    const result = await res.json();
+
+    return result;
+  } catch (error) {
+    console.error('Error updating product:', error);
+    throw error;
+  }
+};

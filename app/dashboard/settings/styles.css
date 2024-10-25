@@ -1,0 +1,13 @@
+.flexis {
+  flex-direction: row;
+}
+
+@media screen and (width <= 968px) {
+  .cont-section {
+    flex-direction: column !important;
+  }
+}
+.cont-section {
+  display: flex;
+  flex-direction: row;
+}

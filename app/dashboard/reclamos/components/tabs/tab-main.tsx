@@ -4,7 +4,7 @@ import BlockThreeCircle from '@/components/block/block-three-circle';
 import { LineDots } from '@/components/charts/line-dots-graph';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TabsContent } from '@/components/ui/tabs';
-import { fetchData } from '@/lib/fetchData';
+import { fetchData } from '@/lib/actions';
 import React from 'react';
 
 export default async function TabMain() {

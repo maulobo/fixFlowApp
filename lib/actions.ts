@@ -104,3 +104,27 @@ export const getClosed = async (): Promise<Complaint[]> => {
     throw new Error('Invalid data ');
   }
 };
+
+export const fetchClaimsById = async (productId: any) => {
+  const session = await auth();
+  const token = session?.sessionToken;
+  try {
+    const response = await fetch(`${BASE_URL}/complaints/${productId}`, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    const res = await response.json();
+    if (res.success === false) return;
+
+    let initialData = await res.complaint,
+      history = await res.updateHistory;
+
+    return { initialData, history };
+  } catch (error) {
+    console.error('Error fetching complaint data:', error);
+  }
+};

@@ -1,4 +1,4 @@
-import { fetchProducts } from '@/lib/fetchData';
+import { fetchProducts } from '@/lib/actions';
 import { Producto } from '@/types';
 
 import React from 'react';

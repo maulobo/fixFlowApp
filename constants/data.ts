@@ -1,4 +1,4 @@
-import { fetchData } from '@/lib/fetchData';
+import { fetchData } from '@/lib/actions';
 import { NavItem } from '@/types';
 import { ChartData, Complaint } from '@/types/types-mine';
 

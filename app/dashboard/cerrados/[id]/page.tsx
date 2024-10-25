@@ -3,7 +3,7 @@ import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { BASE_URL } from '@/constants/data';
-import { getOneHistory } from '@/lib/fetchData';
+import { getOneHistory } from '@/lib/actions';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
 import ComplaintDetails from '../components/complaint-details';
 import UpdateHistoryes from '../components/complaint-history';
