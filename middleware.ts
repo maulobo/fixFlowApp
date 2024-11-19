@@ -8,9 +8,12 @@ export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = req.auth;
 
-  // Redirect to dashboard if authenticated and on the root path
   if (isLoggedIn && nextUrl.pathname === '/') {
+    console.log('AUTENTICADO');
     return NextResponse.redirect(new URL('/dashboard', nextUrl));
+  }
+  if (!isLoggedIn) {
+    console.log('UEPA');
   }
 
   // Redirect to login if not authenticated and trying to access protected routes
@@ -28,5 +31,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ['/dashboard/:path*']
+  matcher: ['/dashboard/:path*', '/']
 };

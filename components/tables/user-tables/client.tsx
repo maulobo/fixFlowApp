@@ -1,5 +1,5 @@
 'use client';
-import { Button } from '@/components/ui/button';
+
 import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
@@ -14,8 +14,6 @@ interface ProductsClientProps {
 }
 
 export const PendingComplaints: React.FC<ProductsClientProps> = ({ data }) => {
-  const router = useRouter();
-
   return (
     <>
       <div className="flex items-start justify-between">
@@ -23,13 +21,6 @@ export const PendingComplaints: React.FC<ProductsClientProps> = ({ data }) => {
           title={`Pending (${data.length})`}
           description="Manage products"
         />
-        <Button
-          className="
-          text-xs md:text-sm"
-          onClick={() => router.push(`/dashboard/reclamo/new`)}
-        >
-          <Plus className="mr-2 h-4 w-4" /> Add New
-        </Button>
       </div>
       <Separator />
       <DataTable searchKey="orderNumber" columns={columns} data={data} />

@@ -18,8 +18,6 @@ import { BASE_URL } from '@/constants/data';
 import { AlertModal } from '../modal/alert-modal';
 
 import { ProductNube, Variant } from '@/types/types-tienda-nube';
-
-import FormGarantia from './form-garantia';
 import FormMain from './form-main';
 
 export const IMG_MAX_LIMIT = 3;

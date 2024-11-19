@@ -60,7 +60,6 @@ export const fetchProducts = async () => {
       'https://api.tiendanube.com/v1/965651/products?per_page=100',
       {
         method: 'GET',
-        cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
           Authentication: `f3f064765cbd7a4ed2d5e550c382156f2e4d58d3`,

@@ -109,13 +109,14 @@ const authConfig = {
   },
   session: {
     strategy: 'jwt', // Usar JWT para manejar las sesiones
-    maxAge: 30 * 60, // 30 minutos en segundos
+    maxAge: 150 * 60, // 150 minutos en segundos
     updateAge: 24 * 60 * 60 // Opcional: refrescar sesión cada 24 horas
   },
   pages: {
     signIn: '/signin', // Página de inicio de sesión
     newUser: '/signup' // Página de registro
   },
+
   secret: process.env.NEXTAUTH_SECRET
 } satisfies NextAuthConfig;
 

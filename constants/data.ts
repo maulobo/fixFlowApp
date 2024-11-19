@@ -221,12 +221,7 @@ export const updateNavItemsWithPendingCount = async () => {
         icon: 'product',
         label: 'profile'
       },
-      {
-        title: 'Kanban',
-        href: '/dashboard/kanban',
-        icon: 'kanban',
-        label: 'kanban'
-      },
+
       {
         title: 'Login',
         href: '/',

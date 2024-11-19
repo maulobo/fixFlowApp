@@ -2,7 +2,6 @@ import { auth } from '@/auth';
 
 import { CalendarDateRangePicker } from '@/components/date-range-picker';
 import PageContainer from '@/components/layout/page-container';
-import { Button } from '@/components/ui/button';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fetchData } from '@/lib/actions';
@@ -11,6 +10,9 @@ import TabWeek from './reclamos/components/tabs/tab-week';
 import TabDay from './reclamos/components/tabs/tab-day';
 import TabSet from './reclamos/components/tabs/tab-set';
 import TabMain from './reclamos/components/tabs/tab-main';
+
+import AddnewButon from '@/components/addnew';
+// import { Button } from '@/components/ui/button';
 
 export default async function page({
   searchParams
@@ -26,6 +28,7 @@ export default async function page({
           <h2 className="text-2xl font-bold tracking-tight">
             Bienvenido {`${session?.user?.name}`}👋
           </h2>
+          <AddnewButon />
         </div>
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList className="">
@@ -36,8 +39,10 @@ export default async function page({
             <TabsTrigger className="hidden md:block" value="set">
               Rango de fechas
             </TabsTrigger>
+
             <CalendarDateRangePicker className="hidden md:block" />
           </TabsList>
+
           <TabMain />
           <TabMonth />
           <TabWeek />
