@@ -1,5 +1,6 @@
 'use client';
 import { BASE_URL } from '@/constants/data';
+import { ProductNube } from '@/types/types-tienda-nube';
 import { Session } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
@@ -75,4 +76,43 @@ export const useDeleteById = async (productId: any, token: any) => {
     console.error('Error updating product:', error);
     throw error;
   }
+};
+
+export const useGetProducts = () => {
+  const [productsReceipt, setProductsReceipt] = useState<any>([]);
+  const [loading1, setLoading1] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/products`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const proddd = await res.json();
+
+        setProductsReceipt(proddd);
+
+        if (!res.ok) {
+          throw new Error(`Fetching failed`);
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError('Ocurrio un error');
+        } else {
+          setError('Ocurrió un error '); // Para otros casos
+        }
+        console.error('Failed to fetch products:', err);
+      } finally {
+        setLoading1(false); // Asegúrate de desactivar el estado de carga
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  return { productsReceipt, loading1, error };
 };

@@ -23,7 +23,7 @@ import {
 
 export default function UpdateHistory({ history }: any) {
   const router = useRouter();
-  const reload = () => {};
+
   return (
     <Card>
       <CardHeader>

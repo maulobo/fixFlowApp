@@ -7,10 +7,10 @@ import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
-import { Complaint } from '@/types/types-mine';
+import { Claim } from '@/types/types-mine';
 
 interface ProductsClientProps {
-  data: Complaint[];
+  data: Claim[];
 }
 
 export const PendingComplaints: React.FC<ProductsClientProps> = ({ data }) => {

@@ -10,8 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { BASE_URL } from '@/constants/data';
 import { useDeleteById } from '@/hooks/useFetchMain';
-
-import { Complaint } from '@/types/types-mine';
+import { Claim } from '@/types/types-mine';
 
 import {
   Edit,
@@ -26,7 +25,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface CellActionProps {
-  data: Complaint;
+  data: Claim;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -153,7 +152,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/reclamos/${data._id}`)}
+            onClick={() => router.push(`/dashboard/reclamos?id=${data._id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

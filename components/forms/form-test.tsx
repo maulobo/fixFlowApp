@@ -1,320 +1,192 @@
-import React, { useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useForm, UseFormReturn, useFieldArray } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-  FormDescription
+  FormMessage
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { ProductNube, Variant } from '@/types/types-tienda-nube';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { formFields, solutionTypes, statuses } from './constants-form';
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
+import { useState } from 'react';
+import { ProductReceipt } from '@/types/types-tienda-nube';
+import { useGetProducts } from '@/hooks/useFetchMain';
+import {
+  Command,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
+} from '../ui/command';
+import { cn } from '@/lib/utils';
+import { FormTypes } from '@/types/types-mine';
 
-export default function FormTest({
-  onSubmit,
+const productSchema = z.object({
+  name: z.string().min(1, 'Nombre del producto es requerido'),
+  quantity: z.number().min(1, 'La cantidad debe ser mayor que 0')
+});
+
+const formSchema = z.object({
+  products: z.array(productSchema)
+});
+
+export type ClaimForm = z.infer<typeof formSchema>;
+
+export function TestForm({
   initialData,
-  products,
-  form,
+  onSubmit,
+  handleSubmit,
+  markAsResolved,
   loading,
-  action
-}: any) {
-  const [filteredProducts, setFilteredProducts] = useState<ProductNube[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [selectedProduct, setSelectedProduct] = useState<ProductNube | null>(
+  form
+}: FormTypes) {
+  const [selectedProduct, setSelectedProduct] = useState<ProductReceipt | null>(
     null
   );
-  const [variants, setVariants] = useState<Variant[]>([]);
-  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
-  const [variantInputValue, setVariantInputValue] = useState<string>(''); // Para el input de la variante
+  const [productImage, setProductImage] = useState<string[] | undefined>([]);
+  const [productImage2, setProductImage2] = useState<string[] | undefined>([]);
 
-  useEffect(() => {
-    if (selectedProduct) {
-      setVariants(selectedProduct.variants);
-    } else {
-      setVariants([]);
+  const [change, setChange] = useState<boolean>(false);
+  const action = initialData ? 'Guardar Cambios' : 'Crear';
+  const { productsReceipt, error, loading1 } = useGetProducts();
+
+  const handleProductSelect = (productName: string, number: number) => {
+    if (number == 1) {
+      const product = products.find((prod) => prod.name.es === productName);
+      setSelectedProduct(product || null);
+      setProductImage(product?.images.map((item: any) => item.src));
+      form.setValue('product', productName);
+      form.setValue('variant', '');
     }
-  }, [selectedProduct]);
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchValue = e.target.value.toLowerCase();
-    setSearchTerm(searchValue);
-
-    const filtered = products.filter((product: ProductNube) =>
-      product.name.es.toLowerCase().includes(searchValue)
-    );
-
-    setFilteredProducts(filtered);
+    if (number == 2) {
+      const product = products.find((prod) => prod.name.es === productName);
+      setSelectedProduct(product || null);
+      setProductImage2(product?.images.map((item) => item.src));
+      form.setValue('product2', productName);
+      form.setValue('variant2', '');
+    }
   };
 
-  const handleSelectProduct = (product: ProductNube) => {
-    setSelectedProduct(product);
-    setSearchTerm(product.name.es); // Setea el término de búsqueda con el nombre del producto seleccionado
-    setFilteredProducts([]); // Limpia los productos filtrados
-    setSelectedVariant(null); // Limpia la variante seleccionada
-    setVariantInputValue(''); // Limpia el valor del input de la variante
+  const products: ProductReceipt[] = productsReceipt.filteredProducts;
+
+  const {
+    control,
+    handleSubmit: handleFormSubmit,
+    setValue,
+    watch
+  } = useForm<ClaimForm>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      products: [{ name: '', quantity: 1 }]
+    }
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'products'
+  });
+
+  const handleAddProduct = () => {
+    append({ name: '', quantity: 1 });
   };
 
-  const handleSelectVariant = (variant: Variant) => {
-    setSelectedVariant(variant);
-    setVariantInputValue(''); // Resetea el valor del input al seleccionar una variante
-  };
-
-  const renderFormFields = (fields: any) => {
-    return fields.map((fieldConfig: any) => {
-      const { name, formLabel, placeholder, type, required } = fieldConfig;
-
-      switch (type) {
-        case 'input':
-          return (
-            <FormField
-              key={name}
-              control={form.control}
-              name={name}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{formLabel}</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder={placeholder}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          );
-        case 'search':
-          return (
-            <FormField
-              key={name}
-              control={form.control}
-              name={name}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{formLabel}</FormLabel>
-                  <FormControl>
-                    <div style={{ position: 'relative' }}>
-                      <Input
-                        autoComplete="off"
-                        {...field}
-                        placeholder={placeholder}
-                        value={searchTerm}
-                        onChange={handleSearch}
-                      />
-                      {filteredProducts.length > 0 && (
-                        <ul
-                          style={{
-                            position: 'absolute',
-                            zIndex: 1,
-                            width: '100%',
-                            listStyle: 'none',
-                            padding: 0,
-                            margin: 0,
-                            backgroundColor: 'black',
-                            maxHeight: '200px',
-                            overflowY: 'auto'
-                          }}
-                        >
-                          {filteredProducts.map((product) => (
-                            <li
-                              key={product.id}
-                              onClick={() => handleSelectProduct(product)}
-                              style={{ padding: '8px', cursor: 'pointer' }}
-                              onMouseEnter={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                  '#7d7d7d')
-                              }
-                              onMouseLeave={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                  'transparent')
-                              }
-                            >
-                              {product.name.es}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          );
-        case 'variantInput':
-          return (
-            <FormField
-              key={name}
-              control={form.control}
-              name={name}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{formLabel}</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={!selectedVariant || loading}
-                      placeholder={placeholder}
-                      value={variantInputValue}
-                      onChange={(e) => {
-                        setVariantInputValue(e.target.value);
-                        field.onChange(e.target.value); // Actualiza el valor en el formulario
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          );
-        case 'variantSelect':
-          return (
-            <FormField
-              key={name}
-              control={form.control}
-              name={name}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{formLabel}</FormLabel>
-                  <FormControl>
-                    <Select
-                      disabled={!selectedProduct || loading}
-                      onValueChange={(value) => {
-                        const variant = variants.find(
-                          (v) => v.id.toString() == value
-                        );
-                        if (variant) handleSelectVariant(variant);
-                        field.onChange(value);
-                      }}
-                      value={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona una variante" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {variants.map((variant) => (
-                          <SelectItem key={variant.sku} value={variant.sku}>
-                            <div className="flex flex-col">
-                              <span>SKU: {variant.sku}</span>
-                              {variant.values.map((value, index) => (
-                                <span key={index}>
-                                  {value.en || value.es || value.pt}{' '}
-                                </span>
-                              ))}
-                              <span>Precio: ${variant.price}</span>
-                              {variant.promotional_price && (
-                                <span className="text-red-500">
-                                  Promoción: ${variant.promotional_price}
-                                </span>
-                              )}
-                              <span>
-                                Stock:{' '}
-                                {variant.stock > 0 ? variant.stock : 'Agotado'}
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          );
-        case 'select':
-          return (
-            <FormField
-              key={name}
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{formLabel}</FormLabel>
-                  <FormDescription>Selecciona el estado</FormDescription>
-                  <FormControl>
-                    <Select
-                      disabled={loading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {statuses.map((statusOption: string) => (
-                          <SelectItem key={statusOption} value={statusOption}>
-                            {statusOption}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          );
-        case 'selectSolution':
-          return (
-            <FormField
-              key={name}
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{formLabel}</FormLabel>
-                  <FormDescription>Selecciona el estado</FormDescription>
-                  <FormControl>
-                    <Select
-                      disabled={loading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {solutionTypes.map((statusOption: string) => (
-                          <SelectItem key={statusOption} value={statusOption}>
-                            {statusOption}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          );
-
-        default:
-          return null;
-      }
-    });
+  const handleRemoveProduct = (index: number) => {
+    remove(index);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-        {renderFormFields(formFields)}
-        <Button type="submit" disabled={loading}>
-          {action}
+      <form onSubmit={handleFormSubmit(onSubmit)}>
+        <div className="items-start gap-4 p-4 align-top md:grid md:grid-cols-2 md:p-8">
+          {/* Productos dinámicos */}
+          {loading1 ? (
+            'Buscando productos...'
+          ) : (
+            <FormField
+              control={form.control}
+              name="product"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Producto</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className="w-full justify-between"
+                        >
+                          {initialData?.product ||
+                            field.value ||
+                            'Seleccionar producto'}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full max-w-sm">
+                      <Command>
+                        <CommandInput placeholder="Buscar producto..." />
+                        <CommandList>
+                          <CommandGroup>
+                            {products.map((product, i) => (
+                              <CommandItem
+                                key={`${product}_${i}`}
+                                defaultValue={product.name.es}
+                                onSelect={() =>
+                                  handleProductSelect(product.name.es, 1)
+                                }
+                              >
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    product.name.es === field.value
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                                {product.name.es}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </div>
+
+        {/* Botón para agregar más productos */}
+        <Button type="button" onClick={handleAddProduct} variant="outline">
+          + Agregar producto
         </Button>
+
+        <div className="mt-4 flex gap-4">
+          <Button type="submit" disabled={loading}>
+            {action}
+          </Button>
+          {initialData ? (
+            <Button
+              disabled={loading}
+              variant="solved"
+              onClick={markAsResolved}
+            >
+              Resuelto
+            </Button>
+          ) : null}
+        </div>
       </form>
     </Form>
   );

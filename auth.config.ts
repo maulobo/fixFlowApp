@@ -89,7 +89,7 @@ const authConfig = {
         };
 
         const customToken = jwt.sign(payload, process.env.JWT_SECRET!, {
-          expiresIn: '120m',
+          expiresIn: '220m',
           algorithm: 'HS256'
         });
 

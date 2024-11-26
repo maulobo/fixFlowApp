@@ -19,6 +19,7 @@ import {
 import { Input } from './input';
 import { Button } from './button';
 import { ScrollArea, ScrollBar } from './scroll-area';
+import { Claim } from '@/types/types-mine';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -31,6 +32,22 @@ export function DataTable<TData, TValue>({
   data,
   searchKey
 }: DataTableProps<TData, TValue>) {
+  data.forEach((complaint: any) => {
+    const date = new Date(complaint.dateTime);
+
+    // Formateamos la fecha en el formato deseado "DD-MM-YY HH:mm:ss"
+    const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(
+      date.getMonth() + 1
+    ).padStart(2, '0')}-${String(date.getFullYear()).slice(2)} ${String(
+      date.getHours()
+    ).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(
+      date.getSeconds()
+    ).padStart(2, '0')}`;
+
+    // Asignamos el nuevo valor al campo `dateTime`
+    complaint.createdAt = formattedDate;
+  });
+
   const [showDestacados, setShowDestacados] = useState(false);
 
   const table = useReactTable({

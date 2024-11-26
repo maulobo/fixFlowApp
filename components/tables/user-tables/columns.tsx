@@ -3,9 +3,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
 import { User } from '@/constants/data';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Complaint } from '@/types/types-mine';
+import { Claim } from '@/types/types-mine';
 
-export const columns: ColumnDef<Complaint>[] = [
+export const columns: ColumnDef<Claim>[] = [
   {
     id: 'select',
     header: ({ table }) => (

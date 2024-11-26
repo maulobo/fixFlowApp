@@ -1,0 +1,1425 @@
+{
+  "id": 46693308,
+  "name": {
+    "es": "Glass Completo (Cerámico)"
+  },
+  "description": {
+    "es": "<p dir=\"ltr\">Te presentamos nuestro Glass Completo Cer&aacute;mico! Este protector, cubre de manera completa la pantalla del celular, llegando hasta todas las esquinas. Es flexible, por lo que no se rompe ni se astilla.</p>\r\n\r\n<p dir=\"ltr\">Viene en color Blanco y Negro, para que quede del mismo color que la pantalla de tu IPhone. Parece que no tuvieras nada puesto. Es una gran opci&oacute;n para proteger tu celular.&nbsp; Depende el modelo de iPhone, el mismo puede ser Matte o Clasico.</p>\r\n"
+  },
+  "handle": {
+    "es": "glass-completo-ceramico"
+  },
+  "attributes": [
+    {
+      "es": "Modelo"
+    },
+    {
+      "es": "Color"
+    }
+  ],
+  "published": true,
+  "free_shipping": false,
+  "requires_shipping": true,
+  "canonical_url": "https://casecompany.ar/productos/glass-completo-ceramico/",
+  "video_url": null,
+  "seo_title": {
+    "es": ""
+  },
+  "seo_description": {
+    "es": ""
+  },
+  "brand": "",
+  "created_at": "2020-03-16T16:04:19+0000",
+  "updated_at": "2024-11-20T13:00:31+0000",
+  "variants": [
+    {
+      "id": 893225463,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 1,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 134,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101616",
+      "values": [
+        {
+          "es": "iPhone 6/7/8/SE2020"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:46+0000",
+      "updated_at": "2024-11-19T15:09:31+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492897,
+          "variant_id": 893225463,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 134
+        }
+      ]
+    },
+    {
+      "id": 893225466,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 2,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 33,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101617",
+      "values": [
+        {
+          "es": "iPhone 6/7/8/SE2020"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:46+0000",
+      "updated_at": "2024-11-11T16:05:54+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492900,
+          "variant_id": 893225466,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 33
+        }
+      ]
+    },
+    {
+      "id": 893225467,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 3,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 180,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101618",
+      "values": [
+        {
+          "es": "iPhone 6 Plus/7 Plus/8 Plus"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:46+0000",
+      "updated_at": "2024-11-11T16:05:54+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492901,
+          "variant_id": 893225467,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 180
+        }
+      ]
+    },
+    {
+      "id": 893225469,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 4,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101619",
+      "values": [
+        {
+          "es": "iPhone 6 Plus/7 Plus/8 Plus"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:47+0000",
+      "updated_at": "2024-11-11T16:05:54+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492903,
+          "variant_id": 893225469,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225471,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 5,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 149,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101620",
+      "values": [
+        {
+          "es": "iPhone X/Xs/11 Pro"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:47+0000",
+      "updated_at": "2024-11-11T16:05:54+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492905,
+          "variant_id": 893225471,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 149
+        }
+      ]
+    },
+    {
+      "id": 893225473,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 6,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101621",
+      "values": [
+        {
+          "es": "iPhone X/Xs/11 Pro"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:47+0000",
+      "updated_at": "2024-11-11T16:05:54+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492909,
+          "variant_id": 893225473,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225476,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 7,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101622",
+      "values": [
+        {
+          "es": "iPhone XR/11"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:47+0000",
+      "updated_at": "2024-11-11T16:05:54+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492911,
+          "variant_id": 893225476,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225478,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 8,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101623",
+      "values": [
+        {
+          "es": "iPhone XR/11"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:47+0000",
+      "updated_at": "2024-11-11T16:05:54+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492914,
+          "variant_id": 893225478,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225481,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 9,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 198,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101624",
+      "values": [
+        {
+          "es": "iPhone Xs Max/11 Pro Max"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:47+0000",
+      "updated_at": "2024-11-11T16:05:54+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492917,
+          "variant_id": 893225481,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 198
+        }
+      ]
+    },
+    {
+      "id": 893225485,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 10,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101625",
+      "values": [
+        {
+          "es": "iPhone Xs Max/11 Pro Max"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:47+0000",
+      "updated_at": "2024-11-11T16:05:54+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492921,
+          "variant_id": 893225485,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225489,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 11,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 28,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101628",
+      "values": [
+        {
+          "es": "iPhone 12/12 Pro"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:47+0000",
+      "updated_at": "2024-11-12T14:48:18+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492923,
+          "variant_id": 893225489,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 28
+        }
+      ]
+    },
+    {
+      "id": 893225490,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 12,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101629",
+      "values": [
+        {
+          "es": "iPhone 12/12 Pro"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:48+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492925,
+          "variant_id": 893225490,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225492,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 13,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101626",
+      "values": [
+        {
+          "es": "iPhone 12 Mini"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:48+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492927,
+          "variant_id": 893225492,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225495,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 14,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101627",
+      "values": [
+        {
+          "es": "iPhone 12 Mini"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:48+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492929,
+          "variant_id": 893225495,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225498,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 15,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 100,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101630",
+      "values": [
+        {
+          "es": "iPhone 12 Pro Max"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:48+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492932,
+          "variant_id": 893225498,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 100
+        }
+      ]
+    },
+    {
+      "id": 893225501,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 16,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101631",
+      "values": [
+        {
+          "es": "iPhone 12 Pro Max"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:48+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492936,
+          "variant_id": 893225501,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225504,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 17,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101636",
+      "values": [
+        {
+          "es": "iPhone 13 Mini"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:48+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492940,
+          "variant_id": 893225504,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225511,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 18,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101637",
+      "values": [
+        {
+          "es": "iPhone 13 Mini"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:48+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492946,
+          "variant_id": 893225511,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225516,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 19,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 104,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101632",
+      "values": [
+        {
+          "es": "iPhone 13/13 pro"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:49+0000",
+      "updated_at": "2024-11-15T20:58:03+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492949,
+          "variant_id": 893225516,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 104
+        }
+      ]
+    },
+    {
+      "id": 893225518,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 20,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101633",
+      "values": [
+        {
+          "es": "iPhone 13/13 pro"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:49+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492952,
+          "variant_id": 893225518,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225521,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 21,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 103,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101634",
+      "values": [
+        {
+          "es": "iPhone 13 Pro Max"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:49+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492955,
+          "variant_id": 893225521,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 103
+        }
+      ]
+    },
+    {
+      "id": 893225522,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 22,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "101635",
+      "values": [
+        {
+          "es": "iPhone 13 Pro Max"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:49+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492956,
+          "variant_id": 893225522,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225523,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 23,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 39,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "103150",
+      "values": [
+        {
+          "es": "iPhone 14"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:49+0000",
+      "updated_at": "2024-11-20T13:00:14+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492957,
+          "variant_id": 893225523,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 39
+        }
+      ]
+    },
+    {
+      "id": 893225524,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 24,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "103151",
+      "values": [
+        {
+          "es": "iPhone 14"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:49+0000",
+      "updated_at": "2024-11-11T16:05:55+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492959,
+          "variant_id": 893225524,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225526,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 25,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 33,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "103152",
+      "values": [
+        {
+          "es": "iPhone 14 Pro"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:49+0000",
+      "updated_at": "2024-11-18T11:28:38+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492960,
+          "variant_id": 893225526,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 33
+        }
+      ]
+    },
+    {
+      "id": 893225527,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 26,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "103153",
+      "values": [
+        {
+          "es": "iPhone 14 Pro"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:50+0000",
+      "updated_at": "2024-11-11T16:05:56+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492961,
+          "variant_id": 893225527,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225529,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 27,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 34,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "103154",
+      "values": [
+        {
+          "es": "iPhone 14 Max"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:50+0000",
+      "updated_at": "2024-11-13T15:21:24+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492963,
+          "variant_id": 893225529,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 34
+        }
+      ]
+    },
+    {
+      "id": 893225530,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 28,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "103155",
+      "values": [
+        {
+          "es": "iPhone 14 Max"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:50+0000",
+      "updated_at": "2024-11-11T16:05:56+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492965,
+          "variant_id": 893225530,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225532,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 29,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 62,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "103156",
+      "values": [
+        {
+          "es": "iPhone 14 Pro Max"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:50+0000",
+      "updated_at": "2024-11-18T11:28:39+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492968,
+          "variant_id": 893225532,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 62
+        }
+      ]
+    },
+    {
+      "id": 893225535,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 30,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "103157",
+      "values": [
+        {
+          "es": "iPhone 14 Pro Max"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:50+0000",
+      "updated_at": "2024-11-11T16:05:56+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492969,
+          "variant_id": 893225535,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225536,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 31,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 20,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "104338",
+      "values": [
+        {
+          "es": "iPhone 15/15 Pro"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:50+0000",
+      "updated_at": "2024-11-17T15:10:17+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492971,
+          "variant_id": 893225536,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 20
+        }
+      ]
+    },
+    {
+      "id": 893225538,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 32,
+      "price": "2990.00",
+      "compare_at_price": "2990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": null,
+      "values": [
+        {
+          "es": "iPhone 15/15 Pro"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:50+0000",
+      "updated_at": "2024-11-11T16:05:56+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492972,
+          "variant_id": 893225538,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "id": 893225540,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 33,
+      "price": "3990.00",
+      "compare_at_price": "3990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 13,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": "104339",
+      "values": [
+        {
+          "es": "iPhone 15 Plus/15 Pro Max"
+        },
+        {
+          "es": "Negro"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:51+0000",
+      "updated_at": "2024-11-11T16:05:56+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492974,
+          "variant_id": 893225540,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 13
+        }
+      ]
+    },
+    {
+      "id": 893225542,
+      "image_id": 330003187,
+      "product_id": 46693308,
+      "position": 34,
+      "price": "2990.00",
+      "compare_at_price": "2990.00",
+      "promotional_price": null,
+      "stock_management": true,
+      "stock": 0,
+      "weight": "0.020",
+      "width": "9.00",
+      "height": "1.00",
+      "depth": "18.00",
+      "sku": null,
+      "values": [
+        {
+          "es": "iPhone 15 Plus/15 Pro Max"
+        },
+        {
+          "es": "Blanco"
+        }
+      ],
+      "barcode": "None",
+      "mpn": null,
+      "age_group": null,
+      "gender": null,
+      "created_at": "2024-05-03T19:30:51+0000",
+      "updated_at": "2024-11-11T16:05:56+0000",
+      "cost": null,
+      "inventory_levels": [
+        {
+          "id": 512492976,
+          "variant_id": 893225542,
+          "location_id": "01GQFQ61PZDSET8FA2QNY75Z62",
+          "stock": 0
+        }
+      ]
+    }
+  ],
+  "tags": "",
+  "images": [
+    {
+      "id": 330003187,
+      "product_id": 46693308,
+      "src": "https://acdn.mitiendanube.com/stores/965/651/products/diseno-sin-titulo-231-9374b9f7b439f184b316553041106531-1024-1024.png",
+      "position": 1,
+      "alt": [],
+      "height": 1300,
+      "width": 1080,
+      "thumbnails_generated": 2,
+      "created_at": "2022-06-15T14:41:39+0000",
+      "updated_at": "2023-08-16T17:45:19+0000"
+    }
+  ],
+  "categories": [
+    {
+      "id": 7180315,
+      "name": {
+        "es": "Protectores de Pantalla"
+      },
+      "description": {
+        "es": "Todo lo que necesitas para proteger tu IPhone! Tenemos muchas opciones para proteger la pantalla de tu celular."
+      },
+      "handle": {
+        "es": "protectores-de-pantalla"
+      },
+      "parent": null,
+      "subcategories": [24709090, 18334509],
+      "seo_title": {
+        "es": "Protectores de Pantalla"
+      },
+      "seo_description": {
+        "es": "Podes encontrar todos los modelos de protectores de pantalla que tenemos para proteger la pantalla de tu IPhone y Apple Watch."
+      },
+      "google_shopping_category": "",
+      "created_at": "2020-10-15T03:33:43+0000",
+      "updated_at": "2024-10-19T13:34:51+0000"
+    },
+    {
+      "id": 24709090,
+      "name": {
+        "es": "Protectores de Pantalla"
+      },
+      "description": {
+        "es": ""
+      },
+      "handle": {
+        "es": "protectores-de-pantalla1"
+      },
+      "parent": 7180315,
+      "subcategories": [],
+      "seo_title": {
+        "es": ""
+      },
+      "seo_description": {
+        "es": ""
+      },
+      "google_shopping_category": "",
+      "created_at": "2024-05-07T21:31:23+0000",
+      "updated_at": "2024-10-19T13:34:51+0000"
+    }
+  ]
+}

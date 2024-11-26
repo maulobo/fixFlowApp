@@ -11,7 +11,7 @@ import Header from '@/components/layout/header';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Next Shadcn',
+  title: 'FlexiFlow',
   description: 'Basic dashboard with Next.js and Shadcn'
 };
 

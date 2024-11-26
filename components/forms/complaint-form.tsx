@@ -3,14 +3,13 @@ import * as z from 'zod';
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { CloudHail, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { Separator } from '@/components/ui/separator';
 import { Heading } from '@/components/ui/heading';
-
 import { useToast } from '@/components/ui/use-toast';
 import FileUpload from '../file-upload';
 import { formSchema } from './formUtils';
@@ -18,22 +17,19 @@ import { BASE_URL } from '@/constants/data';
 import { AlertModal } from '../modal/alert-modal';
 
 import { ProductNube, Variant } from '@/types/types-tienda-nube';
-import FormMain from './form-main';
+
+import { ClaimForm, MyForm } from './form-generated';
+import { useGetProducts } from '@/hooks/useFetchMain';
+import { TestForm } from './form-test';
 
 export const IMG_MAX_LIMIT = 3;
 
 interface ComplaintFormProps {
-  initialData: any; // Ajusta el tipo según sea necesario
-  products: ProductNube[];
-  type: string;
+  initialData: any;
 }
 
-type ComplaintFormValues = z.infer<typeof formSchema>;
-
 export const ComplaintForm: React.FC<ComplaintFormProps> = ({
-  initialData,
-  products,
-  type
+  initialData
 }) => {
   const { data: session, status } = useSession();
   const params = useParams();
@@ -41,26 +37,25 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const title = initialData ? 'Edit Complaint' : 'Create Complaint';
-  const description = initialData ? 'Edit a Complaint.' : 'Add a new Complaint';
-  const toastMessage = initialData
-    ? 'Complaint updated.'
-    : 'Complaint created.';
-  const action = initialData ? 'Save changes' : 'Create';
+  const title = initialData ? 'Editar Reclamo' : 'Crear Reclamo';
+  const description = initialData
+    ? 'Editar un reclamo'
+    : 'Agregar un nuevo reclamo';
+  const toastMessage = initialData ? 'Reclamo Editado.' : 'Reclamo Creado.';
 
-  const form = useForm<ComplaintFormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      claimReasons: type
-    }
+  const form = useForm<ClaimForm>({
+    resolver: zodResolver(formSchema)
   });
 
-  const onSubmit = async (data: ComplaintFormValues) => {
-    console.log(data);
+  const onSubmit = async (data: ClaimForm) => {
+    console.log('data que llega', data);
+    setLoading(true);
+
     try {
       if (initialData) {
+        console.log('Editando...');
         const res = await axios.put(
-          `${BASE_URL}/edit-complaint/${initialData._id}`,
+          `${BASE_URL}/complaints/${initialData._id}`,
           data,
           {
             headers: {
@@ -72,7 +67,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
         );
         console.log(res);
       } else {
-        console.log('asfksafonafhoifjfoijas');
+        console.log('Creando...');
         await axios.post(`${BASE_URL}/complaints`, data, {
           headers: {
             'Content-Type': 'application/json',
@@ -82,7 +77,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
         });
       }
       router.refresh();
-      router.push(`/dashboard/reclamo`);
+      router.push(`/dashboard/pendientes`);
       toast({
         variant: 'success',
         title: 'Success',
@@ -99,6 +94,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
       setLoading(false);
     }
   };
+
   const {
     handleSubmit,
     formState: { errors }
@@ -106,18 +102,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
   console.log(errors);
 
   const markAsResolved = async () => {
-    console.log('INITIAL', initialData);
     const formValues = form.getValues();
-
-    // if (!errorPrice || !shippingCost || !solutionType || !product) {
-    //   toast({
-    //     variant: 'destructive',
-    //     title: 'Incomplete Fields',
-    //     description:
-    //       'Please ensure all required fields are filled: error price, shipping cost, solution type, and product.'
-    //   });
-    //   return;
-    // }
 
     try {
       setLoading(true);
@@ -144,14 +129,14 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
       toast({
         variant: 'success',
         title: 'Resolved',
-        description: 'The complaint has been marked as resolved.'
+        description: 'El caso fue cerrado con exito'
       });
     } catch (error: any) {
       console.log(error);
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'There was a problem marking the complaint as resolved.'
+        description: 'Hubo un problema al intentar resolver la queja'
       });
     } finally {
       setLoading(false);
@@ -199,15 +184,21 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
       </div>
       <Separator />
 
-      <FormMain
+      {/* <MyForm
         onSubmit={onSubmit}
-        markAsResolved={markAsResolved}
         initialData={initialData}
-        products={products}
-        form={form}
+        markAsResolved={markAsResolved}
+        handleSubmit={handleSubmit}
         loading={loading}
-        action={action}
-        type={type}
+        form={form}
+      /> */}
+      <TestForm
+        onSubmit={onSubmit}
+        initialData={initialData}
+        markAsResolved={markAsResolved}
+        handleSubmit={handleSubmit}
+        loading={loading}
+        form={form}
       />
     </>
   );

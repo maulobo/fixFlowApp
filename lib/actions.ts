@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import { BASE_URL } from '@/constants/data';
-import { Complaint } from '@/types/types-mine';
+import { Claim, SolutionType } from '@/types/types-mine';
 import { ProductNube } from '@/types/types-tienda-nube';
 
 const url = 'https://api.tiendanube.com/v1/965651/products?limit=20';
@@ -26,7 +26,7 @@ export const fetchData = async (url: string) => {
     return error;
   }
 };
-
+// este creo que deberia esta en hooks
 export const fetchDataClient = async (url: string) => {
   try {
     const res = await fetch(`${BASE_URL}/${url}`, {
@@ -56,30 +56,21 @@ export const getOneHistory = async (url: string) => {
 
 export const fetchProducts = async () => {
   try {
-    const res = await fetch(
-      'https://api.tiendanube.com/v1/965651/products?per_page=100',
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authentication: `f3f064765cbd7a4ed2d5e550c382156f2e4d58d3`,
-          'User-Agent': 'FixFlow (maurolobo.ml@gmail.com)'
-        }
-      }
-    );
-
+    const res = await fetch(`${process.env.BASE_URL}/products`);
+    console.log(res);
     if (!res.ok) {
       throw new Error(`Fetching ${url} failed`);
     }
-    const products: ProductNube[] = await res.json();
+    // const products: ProductNube[] = await res.json();
 
-    return products;
+    return res;
   } catch (error) {
     console.error('Failed to fetch products:', error);
     return [];
   }
 };
-export const getClosed = async (): Promise<Complaint[]> => {
+
+export const getClosed = async (): Promise<Claim[]> => {
   const session = await auth();
   const token = session?.sessionToken;
   try {
@@ -126,4 +117,15 @@ export const fetchClaimsById = async (productId: any) => {
   } catch (error) {
     console.error('Error fetching complaint data:', error);
   }
+};
+
+export const getSolutionsTypes = async (): Promise<SolutionType[]> => {
+  return [
+    { value: 'Reenvio', label: 'Reenvio' },
+    { value: 'Cupon', label: 'cupon' },
+    { value: 'Devolucion', label: 'devolucion' },
+    { value: 'Regalo', label: 'regalo' },
+    { value: 'Cambio de producto', label: 'cambio_de_producto' },
+    { value: 'Logistica inversa', label: 'logistica_inversa' }
+  ];
 };

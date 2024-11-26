@@ -50,12 +50,32 @@ export default function FormMain({
   const [selectedProduct2, setSelectedProduct2] = useState<ProductNube>();
   const [variants, setVariants] = useState<Variant[]>([]);
   const [variants2, setVariants2] = useState<Variant[]>([]);
+  const [searchTerm3, setSearchTerm3] = useState('');
+  const [filteredVariants, setFilteredVariants] = useState(variants);
+  const [selectedVariant, setSelectedVariant] = useState('');
 
   useEffect(() => {
     if (selectedProduct) {
       setVariants(selectedProduct?.variants);
     }
   }, [selectedProduct]);
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+
+    const lowerValue = value.toLowerCase();
+    const results = variants.filter(
+      (variant) =>
+        variant.sku.toLowerCase().includes(lowerValue) ||
+        variant.values.some(
+          (val) =>
+            val.en?.toLowerCase().includes(lowerValue) ||
+            val.es?.toLowerCase().includes(lowerValue) ||
+            val.pt?.toLowerCase().includes(lowerValue)
+        )
+    );
+    setFilteredVariants(results);
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -188,56 +208,85 @@ export default function FormMain({
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="variant"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Seleccionar variante</FormLabel>
-                <FormControl>
-                  <Select
-                    disabled={initialData?.variant?.sku || initialData}
-                    onValueChange={field.onChange} // Pasa el objeto directamente
-                    value={field.value || initialData?.variant || ''} // Utiliza el objeto completo
+          <FormItem>
+            <FormLabel>Buscar variante</FormLabel>
+            <FormControl>
+              <div className="relative">
+                {/* Input para buscar variantes */}
+                <Input
+                  placeholder="Buscar por SKU o valor..."
+                  value={searchTerm3}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchTerm3(value);
+
+                    // Filtrar variantes basadas en el término de búsqueda
+                    const lowerValue = value.toLowerCase();
+                    const results = variants.filter(
+                      (variant) =>
+                        variant.sku.toLowerCase().includes(lowerValue) ||
+                        variant.values.some(
+                          (val) =>
+                            val.en?.toLowerCase().includes(lowerValue) ||
+                            val.es?.toLowerCase().includes(lowerValue) ||
+                            val.pt?.toLowerCase().includes(lowerValue)
+                        )
+                    );
+                    setFilteredVariants(results); // Actualizar la lista filtrada
+                  }}
+                  disabled={!selectedProduct || !!selectedVariant} // Desactivar si no hay un producto seleccionado
+                />
+
+                {/* Mostrar lista desplegable */}
+                {searchTerm3 != '' && !selectedVariant && (
+                  <div
+                    className="absolute z-10 mt-1 max-h-52 w-full overflow-y-auto rounded-md border border-gray-300 bg-secondary
+                   shadow-lg"
                   >
-                    <SelectTrigger className="overflow-hidden align-top">
-                      {/* Muestra el SKU o el placeholder */}
-                      <span>
-                        {field.value?.sku ||
-                          initialData?.variant?.sku ||
-                          'Selecciona una variante'}
-                      </span>
-                    </SelectTrigger>
-                    <SelectContent className="max-h-52">
-                      {variants.map((variant) => (
-                        <SelectItem key={variant.sku} value={variant.sku}>
-                          <div className="flex flex-col">
-                            <span>SKU: {variant.sku}</span>
-                            {variant.values.map((value, index) => (
-                              <span key={index}>
-                                {value.en || value.es || value.pt}{' '}
-                              </span>
-                            ))}
-                            <span>Precio: ${variant.price}</span>
+                    {filteredVariants.length > 0 ? (
+                      filteredVariants.map((variant: any) => (
+                        <div
+                          key={variant.sku}
+                          onClick={() => {
+                            setSelectedVariant(variant);
+                            form.setValue('variant', variant.sku); // Setear la variante en el formulario
+                            setSearchTerm3(variant.sku);
+                          }}
+                          className="cursor-pointer px-4 py-2 hover:bg-black"
+                        >
+                          <div className="text-sm font-medium">
+                            SKU: {variant.sku}
+                          </div>
+                          <div className="text-xs ">
+                            {variant.values
+                              .map((v: any) => v.en || v.es || v.pt)
+                              .join(', ')}
+                          </div>
+                          <div className="text-xs">
+                            Precio: ${variant.price}{' '}
                             {variant.promotional_price && (
                               <span className="text-red-500">
-                                Promoción: ${variant.promotional_price}
+                                (Promoción: ${variant.promotional_price})
                               </span>
                             )}
-                            <span>
-                              Stock:{' '}
-                              {variant.stock > 0 ? variant.stock : 'Agotado'}
-                            </span>
                           </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                          <div className="text-xs">
+                            Stock:{' '}
+                            {variant.stock > 0 ? variant.stock : 'Agotado'}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-sm text-gray-500">
+                        No se encontraron variantes
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
 
           <FormField
             control={form.control}

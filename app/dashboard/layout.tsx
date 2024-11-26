@@ -6,7 +6,7 @@ import { NavItem } from '@/types';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'FlowFlex',
+  title: 'FlexiFlow',
   description: 'Manejador de informacion'
 };
 

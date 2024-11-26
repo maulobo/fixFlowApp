@@ -1,25 +1,42 @@
-import React from 'react';
-
-import PageContainer from '@/components/layout/page-container';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { Heading } from '@/components/ui/heading';
-import ReclamosIndex from './components/reclamos-index';
+import { ComplaintForm } from '@/components/forms/complaint-form';
+import PageContainer from '@/components/layout/page-container';
+import UptadeHistory from '@/components/tables/update-history';
+import { fetchClaimsById, fetchProducts } from '@/lib/actions';
 
-const breadcrumbItems = [
-  { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Complaint', link: '/dashboard/complaint' }
-];
-const title = 'Elija el tipo de reclamo';
-const description = 'alguna description';
+export default async function Page({
+  searchParams
+}: {
+  searchParams: { [key: string]: string };
+}) {
+  const breadcrumbItems = [
+    { title: 'Dashboard', link: '/dashboard' },
+    { title: 'Reclamos', link: '/dashboard/reclamos' },
+    {
+      title: `${searchParams.id}`,
+      link: `/dashboard/reclamos/${searchParams.id}`
+    }
+  ];
+  const { id } = searchParams;
+  console.log(searchParams);
 
-export default function page() {
+  let initialData = null;
+  let history = null;
+
+  if (id) {
+    const reclamos = await fetchClaimsById(id);
+    initialData = reclamos?.initialData;
+    history = reclamos?.history;
+  }
+
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
-        <Heading title={title} description={description} />
-        <ReclamosIndex />
+        <ComplaintForm initialData={initialData} key={null} />
       </div>
+      {/* si hay data inicial entonces devuelve historial */}
+      {initialData ? <UptadeHistory history={history} /> : null}
     </PageContainer>
   );
 }
