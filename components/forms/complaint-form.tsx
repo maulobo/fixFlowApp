@@ -16,16 +16,15 @@ import { formSchema } from './formUtils';
 import { BASE_URL } from '@/constants/data';
 import { AlertModal } from '../modal/alert-modal';
 
-import { ProductNube, Variant } from '@/types/types-tienda-nube';
-
 import { ClaimForm, MyForm } from './form-generated';
 import { useGetProducts } from '@/hooks/useFetchMain';
-import { TestForm } from './form-test';
+import { FormTest } from './form-test';
+import { Claim, FormValues, Variant } from '@/types/types-mine';
 
 export const IMG_MAX_LIMIT = 3;
 
 interface ComplaintFormProps {
-  initialData: any;
+  initialData: Claim;
 }
 
 export const ComplaintForm: React.FC<ComplaintFormProps> = ({
@@ -43,11 +42,41 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     : 'Agregar un nuevo reclamo';
   const toastMessage = initialData ? 'Reclamo Editado.' : 'Reclamo Creado.';
 
-  const form = useForm<ClaimForm>({
-    resolver: zodResolver(formSchema)
+  const defaultValues = initialData
+    ? initialData
+    : {
+        products: [
+          {
+            product: {
+              name: '',
+              id: ''
+            },
+            variant: {
+              name: {
+                es: ''
+              },
+              id: '',
+              price: '',
+              product_id: '',
+              sku: ''
+            } as Variant
+          }
+        ],
+        orderNumber: '',
+        claimReasons: '',
+        comments: '',
+        shippingMethod: undefined,
+        status: '',
+        trackingCode: undefined,
+        solutionType: undefined,
+        shippingCost: undefined
+      };
+
+  const form = useForm<FormValues>({
+    defaultValues
   });
 
-  const onSubmit = async (data: ClaimForm) => {
+  const onSubmit = async (data: FormValues) => {
     console.log('data que llega', data);
     setLoading(true);
 
@@ -161,6 +190,18 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        ...defaultValues, // Valores por defecto
+        ...initialData // Sobrescribe con datos iniciales
+      });
+    }
+  }, [initialData, form.reset]);
+
+  // Observa los valores del formulario
+  const watchedProducts = form.watch('products');
+
   return (
     <>
       <AlertModal
@@ -192,7 +233,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
         loading={loading}
         form={form}
       /> */}
-      <TestForm
+      <FormTest
         onSubmit={onSubmit}
         initialData={initialData}
         markAsResolved={markAsResolved}

@@ -12,7 +12,6 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-
 import { Check, ChevronsUpDown } from 'lucide-react';
 import {
   Command,
@@ -27,9 +26,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
-
 import { cn } from '@/lib/utils';
-import { ProductNube } from '@/types/types-tienda-nube';
 import { useEffect, useState } from 'react';
 import {
   AlertDialog,

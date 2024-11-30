@@ -43,10 +43,7 @@ export type Claim = {
   orderNumber: string;
   dateTime: string;
   comments: string;
-  product: string;
-  product2: string;
-  variant: string;
-  variant2: string;
+  product: ProductSave;
   trackingCode: string;
   claimReasons: string;
   shippingMethod: string;
@@ -58,6 +55,18 @@ export type Claim = {
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   __v: number;
+};
+
+export type Variant = {
+  name: { es: string };
+  id: string;
+  price: string;
+  product_id: string;
+  sku: string;
+};
+export type ProductSave = {
+  name: string;
+  id: string;
 };
 
 type UpdateHistory = {
@@ -83,14 +92,29 @@ interface Images {
 export interface ProductReceipt {
   name: { es: string };
   images: Images[];
-  variants: string[];
+  variants: Variant[];
+  id: string;
 }
 
 export interface FormTypes {
   initialData: Claim;
-  onSubmit: (data: ClaimForm) => void;
+  onSubmit: (data: FormValues) => void;
   markAsResolved: () => void;
   loading: boolean;
-  form: UseFormReturn<ClaimForm>;
+  form: UseFormReturn<FormValues>;
   handleSubmit: any;
 }
+export type FormValues = {
+  products: {
+    product: ProductSave;
+    variant: Variant;
+  }[];
+  orderNumber: string | number;
+  claimReasons: string;
+  comments: string | null;
+  shippingMethod: string | null;
+  status: string;
+  trackingCode: string | number;
+  solutionType: string | null;
+  shippingCost: string | null;
+};

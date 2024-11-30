@@ -24,10 +24,14 @@ export const formSchema = z.object({
   orderNumber: z.any(),
   claimReasons: z.string().min(1).max(255),
   comments: z.string().min(1).max(255),
-  product: z.string(),
-  product2: z.string().optional(),
-  variant: z.string(),
-  variant2: z.string().optional(),
+  products: z
+    .array(
+      z.object({
+        product: z.string(),
+        variant: z.any() // Puedes ajustar esto si sabes la estructura de Variant
+      })
+    )
+    .default([]),
   shippingMethod: z.string().min(1).max(255).optional(),
   status: z.string(),
   trackingCode: z.string().optional(),
