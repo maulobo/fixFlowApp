@@ -108,13 +108,14 @@ export type FormValues = {
   products: {
     product: ProductSave;
     variant: Variant;
+    quantity: number;
   }[];
   orderNumber: string | number;
   claimReasons: string;
-  comments: string | null;
-  shippingMethod: string | null;
+  comments: string;
+  shippingMethod: string;
   status: string;
   trackingCode: string | number;
   solutionType: string | null;
-  shippingCost: string | null;
+  shippingCost: string;
 };

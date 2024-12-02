@@ -44,7 +44,6 @@ export const getOneHistory = async (url: string) => {
   try {
     const res = await fetch(`${process.env.BASE_URL}/${url}`, {
       method: 'GET',
-
       cache: 'no-store'
     });
     const data = await res.json();
@@ -121,6 +120,7 @@ export const fetchClaimsById = async (productId: any) => {
 
 export const getSolutionsTypes = async (): Promise<SolutionType[]> => {
   return [
+    { value: 'Sin Solucion', label: 'sin_solucion' },
     { value: 'Reenvio', label: 'Reenvio' },
     { value: 'Cupon', label: 'cupon' },
     { value: 'Devolucion', label: 'devolucion' },
@@ -128,4 +128,32 @@ export const getSolutionsTypes = async (): Promise<SolutionType[]> => {
     { value: 'Cambio de producto', label: 'cambio_de_producto' },
     { value: 'Logistica inversa', label: 'logistica_inversa' }
   ];
+};
+
+export const getImagesBack = async (
+  variantId: number,
+  productId: number
+): Promise<any> => {
+  try {
+    const res = await fetch(
+      `${BASE_URL}/products/images?variantId=${variantId}&productId=${productId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Fetching failed`);
+    }
+
+    const respuesta = await res.json();
+
+    return respuesta;
+  } catch (err: unknown) {
+    console.error('Error fetching images:', err);
+    return err;
+  }
 };

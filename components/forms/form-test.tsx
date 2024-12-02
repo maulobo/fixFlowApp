@@ -23,8 +23,13 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
-import { FormTypes, ProductReceipt, Variant } from '@/types/types-mine';
+import { useEffect, useState } from 'react';
+import {
+  FormTypes,
+  ProductReceipt,
+  SolutionType,
+  Variant
+} from '@/types/types-mine';
 import { useGetProducts } from '@/hooks/useFetchMain';
 import {
   Select,
@@ -34,6 +39,14 @@ import {
   SelectValue
 } from '../ui/select';
 import { Input } from '../ui/input';
+import { DrawerDemo } from '../drawer';
+import { getSolutionsTypes } from '@/lib/actions';
+
+const status = [
+  { label: 'Hablado', value: 'Hablado' },
+  { label: 'No Hablado', value: 'No Hablado' },
+  { label: 'Empaquetado', value: 'Empaquetado' }
+];
 
 export function FormTest({
   initialData,
@@ -45,10 +58,14 @@ export function FormTest({
 }: FormTypes) {
   const { productsReceipt, loading1 } = useGetProducts();
   const products: ProductReceipt[] = productsReceipt.filteredProducts;
-
   const [selectedProducts, setSelectedProducts] = useState<
     (ProductReceipt | null)[]
   >([null]);
+  const [variantDrawer, setVariantDrawer] = useState<Variant>();
+  const [productDrawer, setProducttDrawer] = useState<any>();
+  const [loadingImage, setLoadingImage] = useState<boolean>(false);
+  const [imgRes, setImgRes] = useState('');
+  const [solutions, setSolutions] = useState<SolutionType[]>([]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -59,11 +76,18 @@ export function FormTest({
     console.log(data);
   };
 
+  useEffect(() => {
+    (async () => {
+      const solution = await getSolutionsTypes();
+      setSolutions(solution);
+    })();
+  }, []);
+
   const handleProductSelect = (product: ProductReceipt, index: number) => {
     const newSelectedProducts = [...selectedProducts];
     newSelectedProducts[index] = product;
     setSelectedProducts(newSelectedProducts);
-    console.log(product);
+    // console.log(product);
 
     form.setValue(`products.${index}.product`, {
       name: product.name.es,
@@ -71,11 +95,20 @@ export function FormTest({
     });
 
     form.setValue(`products.${index}.variant`, {} as Variant);
+    form.setValue(`products.${index}.quantity`, 1);
   };
 
   const handleVariantSelect = (variant: Variant, index: number) => {
     form.setValue(`products.${index}.variant`, variant);
-    console.log(variant);
+    form.setValue(`products.${index}.quantity`, 1);
+  };
+
+  const showData = (index: any) => {
+    setImgRes('');
+    const variant = form.watch(`products.${index}.variant`);
+    const name = form.watch(`products.${index}.product`);
+    setVariantDrawer(variant);
+    setProducttDrawer(name);
   };
 
   const getVariantsForProduct = (index: number) => {
@@ -122,7 +155,10 @@ export function FormTest({
                   <SelectItem value="otro">Otro</SelectItem>
                 </SelectContent>
               </Select>
-              <FormDescription>Description</FormDescription>
+              <FormDescription>
+                Ingrese el tipo de solucion que se le dio, si aun no tiene
+                solucion deje el espacio vacio
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -140,8 +176,7 @@ export function FormTest({
                   type="text"
                   placeholder="Ejemplo: 12345"
                   {...field}
-                  className=""
-                  defaultValue={field.value || initialData?.orderNumber || ''}
+                  defaultValue={field.value || initialData?.orderNumber}
                 />
               </FormControl>
               <FormDescription>Introduce el número de orden.</FormDescription>
@@ -149,7 +184,7 @@ export function FormTest({
             </FormItem>
           )}
         />
-        {/* Número de Orden */}
+        {/* Codigo de envio */}
         <FormField
           control={form.control}
           name="trackingCode"
@@ -230,7 +265,6 @@ export function FormTest({
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={form.control}
                   name={`products.${index}.variant`}
@@ -291,6 +325,40 @@ export function FormTest({
                     </FormItem>
                   )}
                 />
+                {form.watch(`products.${index}.variant`)?.sku && (
+                  <FormField
+                    control={form.control}
+                    name={`products.${index}.quantity`}
+                    render={({ field: fieldProps }) => (
+                      <FormItem className="w-24">
+                        <FormLabel>Cantidad</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="1"
+                            {...fieldProps}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value, 10);
+                              fieldProps.onChange(isNaN(value) ? 1 : value);
+                            }}
+                            className="text-center"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                <DrawerDemo
+                  index={index}
+                  showData={showData}
+                  variantDrawer={variantDrawer}
+                  productDrawer={productDrawer}
+                  setLoadingImage={setLoadingImage}
+                  loadingImage={loadingImage}
+                  imgRes={imgRes}
+                  setImgRes={setImgRes}
+                />
 
                 {fields.length > 1 && (
                   <Button
@@ -323,7 +391,8 @@ export function FormTest({
                   price: '',
                   product_id: '',
                   sku: ''
-                } as Variant
+                } as Variant,
+                quantity: 1
               });
               setSelectedProducts([...selectedProducts, null]);
             }}
@@ -332,6 +401,130 @@ export function FormTest({
             Agregar Producto
           </Button>
         </div>
+
+        {/* Método de Envío */}
+        <FormField
+          control={form.control}
+          name="shippingMethod"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Método de Envío</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Ejemplo: DHL"
+                  {...field}
+                  className="w-full"
+                  defaultValue={
+                    initialData?.shippingMethod || field.value || ''
+                  }
+                />
+              </FormControl>
+              <FormDescription>Especifica el método de envío.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Costo de envio */}
+        <FormField
+          control={form.control}
+          name="shippingCost"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Costo de envio</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  placeholder="Ejemplo: 1000"
+                  {...field}
+                  className=""
+                  defaultValue={field.value || initialData?.orderNumber || ''}
+                />
+              </FormControl>
+              <FormDescription>Introduce el costo del envio</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Comentarios */}
+        <FormField
+          control={form.control}
+          name="comments"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Comentarios</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Escribe tus comentarios aquí"
+                  {...field}
+                  className="w-full rounded-md border p-2"
+                  defaultValue={initialData?.comments || field.value || ''}
+                />
+              </FormControl>
+              <FormDescription>
+                Incluye cualquier detalle adicional
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Estado */}
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Estado</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={initialData?.status || field.value || ''}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Indique estado del reclamo" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {status.map((item, i) => (
+                    <SelectItem value={item.value} key={`${item.value}_${i}`}>
+                      {item.value}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>Estado del reclamo...</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/*tipo de solucion*/}
+        <FormField
+          control={form.control}
+          name="solutionType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo de solucion</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={initialData?.solutionType || field.value || ''}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciones tipo de solucion" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {solutions.map((item, i) => (
+                    <SelectItem value={item.value} key={`${item}_${i}`}>
+                      {item.value}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>Description</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <Button type="submit" className="w-full" disabled={loading1}>
           Enviar

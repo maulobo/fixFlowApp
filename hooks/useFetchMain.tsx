@@ -116,3 +116,48 @@ export const useGetProducts = () => {
 
   return { productsReceipt, loading1, error };
 };
+
+export const useGetImages = async (
+  variantId: number,
+  productId: number
+): Promise<any> => {
+  const [image, setImage] = useState<any>([]);
+  const [loading1, setLoading1] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const res = await fetch(
+          `${BASE_URL}/products/images?variantId=${variantId}&productId=${productId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        const images = await res.json();
+
+        setImage(images);
+
+        if (!res.ok) {
+          throw new Error(`Fetching failed`);
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError('Ocurrio un error');
+        } else {
+          setError('Ocurrió un error '); // Para otros casos
+        }
+        console.error('Failed to fetch products:', err);
+      } finally {
+        setLoading1(false); // Asegúrate de desactivar el estado de carga
+      }
+    };
+
+    fetchImages();
+  }, []);
+
+  return { image, loading1, error };
+};
