@@ -20,6 +20,7 @@ import { ClaimForm, MyForm } from './form-generated';
 import { useGetProducts } from '@/hooks/useFetchMain';
 import { FormTest } from './form-test';
 import { Claim, FormValues, Variant } from '@/types/types-mine';
+import { revalidatePath } from 'next/cache';
 
 export const IMG_MAX_LIMIT = 3;
 
@@ -51,6 +52,22 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
               name: '',
               id: ''
             },
+            solution: {
+              type: '',
+              productToChange: {
+                product: { name: '', id: '' },
+                variant: {
+                  name: { es: '' },
+                  id: '',
+                  price: '',
+                  product_id: '',
+                  sku: ''
+                },
+                Quantity: 0
+              }
+            },
+            shippingMethod: '',
+            quantity: 0,
             variant: {
               name: {
                 es: ''
@@ -63,12 +80,10 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
           }
         ],
         orderNumber: '',
-        claimReasons: '',
         comments: '',
         shippingMethod: undefined,
         status: '',
         trackingCode: undefined,
-        solutionType: undefined,
         shippingCost: undefined
       };
 
@@ -76,16 +91,29 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     defaultValues
   });
 
-  const onSubmit = async (data: FormValues) => {
-    console.log('data que llega', data);
+  console.log('Errores del formulario:', form.formState.errors);
+
+  const onSubmit = async (data: FormValues, event: any) => {
+    const submitter = event.nativeEvent.submitter as any;
+    const buttonAction = submitter.name;
+
     setLoading(true);
 
     try {
+      const requestData =
+        buttonAction === 'solved'
+          ? {
+              ...data,
+              isClosed: true,
+              status: 'Resuelto',
+              closedAt: new Date().toISOString()
+            }
+          : data;
+
       if (initialData) {
-        console.log('Editando...');
         const res = await axios.put(
           `${BASE_URL}/complaints/${initialData._id}`,
-          data,
+          requestData,
           {
             headers: {
               authorization: `Bearer ${session?.sessionToken}`,
@@ -94,10 +122,8 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
             }
           }
         );
-        console.log(res);
       } else {
-        console.log('Creando...');
-        await axios.post(`${BASE_URL}/complaints`, data, {
+        await axios.post(`${BASE_URL}/complaints`, requestData, {
           headers: {
             'Content-Type': 'application/json',
             authorization: `Bearer ${session?.sessionToken}`,
@@ -106,18 +132,27 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
         });
       }
       router.refresh();
-      router.push(`/dashboard/pendientes`);
+      router.push(
+        buttonAction === 'solved' ? `/dashboard` : `/dashboard/pendientes`
+      );
+
       toast({
         variant: 'success',
-        title: 'Success',
-        description: toastMessage
+        title: buttonAction === 'solved' ? 'Resolved' : 'Success',
+        description:
+          buttonAction === 'solved'
+            ? 'El caso fue cerrado con exito'
+            : toastMessage
       });
     } catch (error: any) {
       console.log(error);
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: `${error?.response.data.error.errorResponse?.errmsg}`
+        description:
+          buttonAction === 'solved'
+            ? 'Hubo un problema al intentar resolver la queja'
+            : `${error?.response.data.error.errorResponse?.errmsg}`
       });
     } finally {
       setLoading(false);
@@ -129,48 +164,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     formState: { errors }
   } = form;
   console.log(errors);
-
-  const markAsResolved = async () => {
-    const formValues = form.getValues();
-
-    try {
-      setLoading(true);
-      console.log('FORM', formValues);
-
-      const res = await axios.put(
-        `${BASE_URL}/complaints/${initialData._id}`,
-        {
-          ...formValues,
-          isClosed: true,
-          status: 'Resuelto',
-          closedAt: new Date().toISOString() // Fecha actual
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-User-Id': session?.user?.email,
-            authorization: `Bearer ${session?.sessionToken}`
-          }
-        }
-      );
-      router.refresh();
-      router.push(`/dashboard`);
-      toast({
-        variant: 'success',
-        title: 'Resolved',
-        description: 'El caso fue cerrado con exito'
-      });
-    } catch (error: any) {
-      console.log(error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Hubo un problema al intentar resolver la queja'
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const onDelete = async () => {
     try {
@@ -236,7 +229,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
       <FormTest
         onSubmit={onSubmit}
         initialData={initialData}
-        markAsResolved={markAsResolved}
         handleSubmit={handleSubmit}
         loading={loading}
         form={form}

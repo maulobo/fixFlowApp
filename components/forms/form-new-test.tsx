@@ -1,10 +1,9 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -13,7 +12,6 @@ import {
 import { Check, ChevronsUpDown, Trash2 } from 'lucide-react';
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -25,225 +23,507 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  FormTypes,
+  ProductReceipt,
+  SolutionType,
+  Variant
+} from '@/types/types-mine';
+import { useGetProducts } from '@/hooks/useFetchMain';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '../ui/select';
+import { Input } from '../ui/input';
+import { DrawerDemo } from '../drawer';
+import { getSolutionsTypes } from '@/lib/actions';
 
-// Define a schema for form validation
-const formSchema = z.object({
-  products: z.array(
-    z.object({
-      product: z.string().min(1, 'Selecciona un producto'),
-      variant: z.string().min(1, 'Selecciona una variante')
-    })
-  )
-});
+const status = [
+  { label: 'Hablado', value: 'Hablado' },
+  { label: 'No Hablado', value: 'No Hablado' },
+  { label: 'Empaquetado', value: 'Empaquetado' }
+];
 
-export function FormTest() {
-  // Simulated products data (replace with your actual data fetching logic)
-  const [products] = useState([
-    {
-      name: 'Producto 1',
-      variants: [
-        { id: '1', name: 'Variante A', sku: 'SKU-001', stock: 10 },
-        { id: '2', name: 'Variante B', sku: 'SKU-002', stock: 5 }
-      ]
-    },
-    {
-      name: 'Producto 2',
-      variants: [
-        { id: '3', name: 'Variante X', sku: 'SKU-003', stock: 15 },
-        { id: '4', name: 'Variante Y', sku: 'SKU-004', stock: 7 }
-      ]
-    }
-  ]);
+export function FormTest({
+  initialData,
+  onSubmit,
+  handleSubmit,
+  loading,
+  form
+}: FormTypes) {
+  const { productsReceipt, loading1 } = useGetProducts();
+  const products: ProductReceipt[] = productsReceipt.filteredProducts;
+  const [selectedProducts, setSelectedProducts] = useState<
+    (ProductReceipt | null)[]
+  >([null]);
+  const [variantDrawer, setVariantDrawer] = useState<Variant>();
+  const [productDrawer, setProducttDrawer] = useState<any>();
+  const [loadingImage, setLoadingImage] = useState<boolean>(false);
+  const [imgRes, setImgRes] = useState('');
+  const [solutions, setSolutions] = useState<SolutionType[]>([]);
 
-  // Initialize the form
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      products: [{ product: '', variant: '' }]
-    }
-  });
+  const buton = initialData ? 'Editar' : 'Crear';
 
-  // Use field array for dynamic products
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'products'
   });
 
-  // Handle product selection
-  const handleProductSelect = (productName: string, index: number) => {
-    form.setValue(`products.${index}.product`, productName);
-    form.setValue(`products.${index}.variant`, '');
+  useEffect(() => {
+    (async () => {
+      const solution = await getSolutionsTypes();
+      setSolutions(solution);
+    })();
+  }, []);
+
+  const handleProductSelect = (product: ProductReceipt, index: number) => {
+    const newSelectedProducts = [...selectedProducts];
+    newSelectedProducts[index] = product;
+    setSelectedProducts(newSelectedProducts);
+    // console.log(product);
+
+    form.setValue(`products.${index}.product`, {
+      name: product.name.es,
+      id: product.id || ''
+    });
+
+    form.setValue(`products.${index}.variant`, {} as Variant);
+    form.setValue(`products.${index}.quantity`, 1);
   };
 
-  // Handle variant selection
-  const handleVariantSelect = (variantId: string, index: number) => {
-    form.setValue(`products.${index}.variant`, variantId);
+  const handleVariantSelect = (variant: Variant, index: number) => {
+    form.setValue(`products.${index}.variant`, variant);
+    form.setValue(`products.${index}.quantity`, 1);
   };
 
-  // Get variants for a selected product
-  const getVariantsForProduct = (productName: string) => {
-    const product = products.find((p) => p.name === productName);
-    return product
-      ? product.variants.map((variant) => ({
-          label: `${variant.name} - SKU: ${variant.sku}, Stock: ${variant.stock}`,
-          value: variant.sku
+  const showData = (index: any) => {
+    setImgRes('');
+    const variant = form.watch(`products.${index}.variant`);
+    const name = form.watch(`products.${index}.product`);
+    setVariantDrawer(variant);
+    setProducttDrawer(name);
+  };
+
+  const getVariantsForProduct = (index: number) => {
+    const selectedProduct = selectedProducts[index];
+    return selectedProduct
+      ? selectedProduct.variants.map((variant) => ({
+          label: `SKU: ${variant.sku}, Nombre: ${
+            variant.name ? variant.name.es : 'sin Nombre'
+          }`,
+          value: variant
         }))
       : [];
-  };
-
-  // Form submission handler
-  const onSubmit = (data: any) => {
-    console.log(data);
-    // Handle form submission
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {fields.map((field, index) => (
-          <div key={field.id} className="flex items-center gap-4">
-            {/* Product Selection */}
-            <FormField
-              control={form.control}
-              name={`products.${index}.product`}
-              render={({ field: fieldProps }) => (
-                <FormItem className="flex-grow">
-                  <FormLabel>Producto</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className="w-full justify-between"
-                        >
-                          {fieldProps.value || 'Seleccionar producto'}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full max-w-sm">
-                      <Command>
-                        <CommandInput placeholder="Buscar producto..." />
-                        <CommandList>
-                          <CommandGroup>
-                            {products.map((product) => (
-                              <CommandItem
-                                key={product.name}
-                                onSelect={() =>
-                                  handleProductSelect(product.name, index)
-                                }
-                              >
-                                <Check
-                                  className={cn(
-                                    'mr-2 h-4 w-4',
-                                    product.name === fieldProps.value
-                                      ? 'opacity-100'
-                                      : 'opacity-0'
-                                  )}
-                                />
-                                {product.name}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Variant Selection */}
-            <FormField
-              control={form.control}
-              name={`products.${index}.variant`}
-              render={({ field: fieldProps }) => (
-                <FormItem className="flex-grow">
-                  <FormLabel>Variante</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className="w-full justify-between"
-                          disabled={!form.watch(`products.${index}.product`)}
-                        >
-                          {fieldProps.value
-                            ? getVariantsForProduct(
-                                form.watch(`products.${index}.product`)
-                              ).find((v) => v.value === fieldProps.value)?.label
-                            : 'Seleccionar variante'}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full max-w-sm">
-                      <Command>
-                        <CommandInput placeholder="Buscar variante..." />
-                        <CommandList>
-                          <CommandGroup>
-                            {getVariantsForProduct(
-                              form.watch(`products.${index}.product`)
-                            ).map((variant) => (
-                              <CommandItem
-                                key={variant.value}
-                                onSelect={() =>
-                                  handleVariantSelect(variant.value, index)
-                                }
-                              >
-                                <Check
-                                  className={cn(
-                                    'mr-2 h-4 w-4',
-                                    variant.value === fieldProps.value
-                                      ? 'opacity-100'
-                                      : 'opacity-0'
-                                  )}
-                                />
-                                {variant.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Remove Product Button */}
-            {fields.length > 1 && (
-              <Button
-                type="button"
-                variant="destructive"
-                size="icon"
-                onClick={() => remove(index)}
-                className="self-end"
+        {/* Tipo de Reclamo */}
+        <FormField
+          control={form.control}
+          name="claimReasons"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo de Error</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value || initialData?.claimReasons}
               >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        ))}
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione el tipo de error" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="sin-stock">Sin Stock</SelectItem>
+                  <SelectItem value="garantia">Garantia</SelectItem>
+                  <SelectItem value="cambio-previo">
+                    Cambio previo al envio
+                  </SelectItem>
+                  <SelectItem value="error-empaquetado">
+                    Error de empaquetado
+                  </SelectItem>
+                  <SelectItem value="retorno">Retorno</SelectItem>
+                  <SelectItem value="otro">Otro</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>Ingrese cual fue el error</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        {/* Add Product Button */}
+        {/* Número de Orden */}
+        <FormField
+          control={form.control}
+          name="orderNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Número de Orden</FormLabel>
+              <FormControl>
+                <Input type="text" placeholder="Ejemplo: 12345" {...field} />
+              </FormControl>
+              <FormDescription>Introduce el número de orden.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Codigo de envio */}
+        <FormField
+          control={form.control}
+          name="trackingCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tracking Code</FormLabel>
+              <FormControl>
+                <Input type="text" placeholder="Ejemplo: 12345" {...field} />
+              </FormControl>
+              <FormDescription>
+                Introduce el número de seguimiento
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* products */}
+        <div className="bg-gray-800">
+          {loading1 ? (
+            <div>Cargando productos...</div>
+          ) : (
+            fields.map((field, index) => (
+              <div key={field.id} className="flex items-center gap-4">
+                <FormField
+                  control={form.control}
+                  name={`products.${index}.product`}
+                  render={({ field: fieldProps }) => (
+                    <FormItem className="flex-grow">
+                      <FormLabel>Producto</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className="w-full justify-between"
+                            >
+                              {fieldProps.value.name || 'Seleccionar producto'}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full max-w-sm">
+                          <Command>
+                            <CommandInput placeholder="Buscar producto..." />
+                            <CommandList>
+                              <CommandGroup>
+                                {products.map((product) => (
+                                  <CommandItem
+                                    key={product.id}
+                                    onSelect={() =>
+                                      handleProductSelect(product, index)
+                                    }
+                                  >
+                                    <Check
+                                      className={cn(
+                                        'mr-2 h-4 w-4',
+                                        product.name.es ===
+                                          fieldProps.value.name
+                                          ? 'opacity-100'
+                                          : 'opacity-0'
+                                      )}
+                                    />
+                                    {product.name.es}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`products.${index}.variant`}
+                  render={({ field: fieldProps }) => (
+                    <FormItem className="flex-grow">
+                      <FormLabel>Variante</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className="w-full justify-between"
+                              disabled={
+                                !form.watch(`products.${index}.product`)
+                              }
+                            >
+                              {`SKU: ${
+                                fieldProps.value?.sku || 'N/A'
+                              }  |  Nombre: ${
+                                fieldProps.value?.name?.es || 'Sin nombre'
+                              }` || 'Seleccionar variante'}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full max-w-sm">
+                          <Command>
+                            <CommandInput placeholder="Buscar variante..." />
+                            <CommandList>
+                              <CommandGroup>
+                                {getVariantsForProduct(index).map((variant) => (
+                                  <CommandItem
+                                    key={variant.value.sku}
+                                    onSelect={() =>
+                                      handleVariantSelect(variant.value, index)
+                                    }
+                                  >
+                                    <Check
+                                      className={cn(
+                                        'mr-2 h-4 w-4',
+                                        variant.value.sku ===
+                                          fieldProps.value?.sku
+                                          ? 'opacity-100'
+                                          : 'opacity-0'
+                                      )}
+                                    />
+                                    {/* esto es lo que se muestra */}
+                                    {variant.label}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {form.watch(`products.${index}.variant`)?.sku && (
+                  <FormField
+                    control={form.control}
+                    name={`products.${index}.quantity`}
+                    render={({ field: fieldProps }) => (
+                      <FormItem className="w-24">
+                        <FormLabel>Cantidad</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="1"
+                            {...fieldProps}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value, 10);
+                              fieldProps.onChange(isNaN(value) ? 1 : value);
+                            }}
+                            className="text-center"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                <DrawerDemo
+                  index={index}
+                  showData={showData}
+                  variantDrawer={variantDrawer}
+                  productDrawer={productDrawer}
+                  setLoadingImage={setLoadingImage}
+                  loadingImage={loadingImage}
+                  imgRes={imgRes}
+                  setImgRes={setImgRes}
+                />
+
+                {fields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => {
+                      remove(index);
+                      const newSelectedProducts = [...selectedProducts];
+                      newSelectedProducts.splice(index, 1);
+                      setSelectedProducts(newSelectedProducts);
+                    }}
+                    className="self-end"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            ))
+          )}
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => {
+              append({
+                product: { name: '', id: '' },
+                variant: {
+                  name: { es: '' },
+                  id: '',
+                  price: '',
+                  product_id: '',
+                  sku: ''
+                } as Variant,
+                quantity: 1
+              });
+              setSelectedProducts([...selectedProducts, null]);
+            }}
+            disabled={loading1}
+          >
+            Agregar Producto
+          </Button>
+        </div>
+
+        {/*tipo de solucion*/}
+
+        <FormField
+          control={form.control}
+          name="solutionType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo de solucion</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={initialData?.solutionType || field.value || ''}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciones tipo de solucion" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {solutions.map((item, i) => (
+                    <SelectItem value={item.value} key={`${item}_${i}`}>
+                      {item.value}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Ingrese el tipo de solucion que se le dio, si aun no tiene
+                ingrese "sin solucion"
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Método de Envío */}
+        <FormField
+          control={form.control}
+          name="shippingMethod"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Método de Envío</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Ejemplo: DHL"
+                  {...field}
+                  className="w-full"
+                />
+              </FormControl>
+              <FormDescription>Especifica el método de envío.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Costo de envio */}
+        <FormField
+          control={form.control}
+          name="shippingCost"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Costo de envio</FormLabel>
+              <FormControl>
+                <Input type="text" placeholder="Ejemplo: 1000" {...field} />
+              </FormControl>
+              <FormDescription>Introduce el costo del envio</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Comentarios */}
+        <FormField
+          control={form.control}
+          name="comments"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Comentarios</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Escribe tus comentarios aquí"
+                  {...field}
+                  className="w-full rounded-md border p-2"
+                />
+              </FormControl>
+              <FormDescription>
+                Incluye cualquier detalle adicional
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Estado */}
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Estado</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={initialData?.status || field.value || ''}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Indique estado del reclamo" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {status.map((item, i) => (
+                    <SelectItem value={item.value} key={`${item.value}_${i}`}>
+                      {item.value}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>Estado del reclamo...</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button
-          type="button"
-          variant="outline"
-          onClick={() => append({ product: '', variant: '' })}
+          type="submit"
+          name="default" // Add a name attribute
+          className="w-full"
+          disabled={loading1}
         >
-          Agregar Producto
+          {buton}
         </Button>
-
-        {/* Submit Button */}
-        <Button type="submit" className="w-full">
-          Enviar
-        </Button>
+        {initialData ? (
+          <Button
+            name="solved"
+            variant={'solved'}
+            className="w-full"
+            type="submit"
+            disabled={loading1}
+          >
+            Marcar Como resuelto
+          </Button>
+        ) : null}
       </form>
     </Form>
   );

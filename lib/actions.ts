@@ -3,9 +3,30 @@ import { BASE_URL } from '@/constants/data';
 import { Claim, SolutionType } from '@/types/types-mine';
 import { ProductNube } from '@/types/types-tienda-nube';
 
-const url = 'https://api.tiendanube.com/v1/965651/products?limit=20';
+// const url = 'https://api.tiendanube.com/v1/965651/products?limit=20';
 
 export const fetchData = async (url: string) => {
+  const session = await auth();
+  const token = session?.sessionToken;
+  console.log(url);
+  try {
+    const res = await fetch(`${process.env.BASE_URL}/${url}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      cache: 'no-store'
+    });
+
+    const data = await res.json();
+
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+export const fetchPending = async (url: string) => {
   const session = await auth();
   const token = session?.sessionToken;
 
@@ -16,7 +37,7 @@ export const fetchData = async (url: string) => {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      cache: 'no-store'
+      cache: 'no-cache'
     });
 
     const data = await res.json();
@@ -58,7 +79,7 @@ export const fetchProducts = async () => {
     const res = await fetch(`${process.env.BASE_URL}/products`);
     console.log(res);
     if (!res.ok) {
-      throw new Error(`Fetching ${url} failed`);
+      throw new Error(`Fetching failed`);
     }
     // const products: ProductNube[] = await res.json();
 
@@ -119,6 +140,17 @@ export const fetchClaimsById = async (productId: any) => {
 };
 
 export const getSolutionsTypes = async (): Promise<SolutionType[]> => {
+  return [
+    { value: 'Sin Stock', label: 'sin-stock' },
+    { value: 'Garantia', label: 'garantia' },
+    { value: 'Cambio Previo al Envio', label: 'cambio-previo' },
+    { value: 'Error empaquetado', label: 'error-empaquetado' },
+    { value: 'Retorno', label: 'retorno' },
+    { value: 'Cambio de Producto', label: 'cambio-producto' },
+    { value: 'Otro', label: 'otro' }
+  ];
+};
+export const getClaimReason = async (): Promise<SolutionType[]> => {
   return [
     { value: 'Sin Solucion', label: 'sin_solucion' },
     { value: 'Reenvio', label: 'Reenvio' },

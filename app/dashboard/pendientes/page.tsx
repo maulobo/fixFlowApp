@@ -1,7 +1,7 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import PageContainer from '@/components/layout/page-container';
 import { PendingComplaints } from '@/components/tables/user-tables/client';
-import { fetchData } from '@/lib/actions';
+import { fetchData, fetchPending } from '@/lib/actions';
 import { ChartData } from '@/types/types-mine';
 
 const breadcrumbItems = [
@@ -9,19 +9,18 @@ const breadcrumbItems = [
   { title: 'products', link: '/dashboard/products' }
 ];
 
+type PendingComplaints = {
+  pendingComplaints: any;
+};
+
 export default async function page() {
-  const data: ChartData = await fetchData('dashboard-data');
-  console.log(data);
+  const data: PendingComplaints = await fetchPending('complaints/pending');
 
   return (
     <PageContainer>
       <div className="space-y-2">
         <Breadcrumbs items={breadcrumbItems} />
-        {data.recentComplaints ? (
-          <PendingComplaints data={data.pendingComplaints} />
-        ) : (
-          'No data'
-        )}
+        {data ? <PendingComplaints data={data.pendingComplaints} /> : 'No data'}
       </div>
     </PageContainer>
   );

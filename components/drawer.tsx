@@ -48,8 +48,8 @@ export function DrawerDemo({
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button onClick={() => showData(index)} variant="outline">
-          Open Drawer
+        <Button onClick={() => showData(index)} variant="default">
+          Mostrar
         </Button>
       </DrawerTrigger>
       {variantDrawer ? (

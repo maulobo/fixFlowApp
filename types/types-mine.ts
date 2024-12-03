@@ -38,25 +38,6 @@ export interface SolutionType {
   value: string;
 }
 
-export type Claim = {
-  _id: string;
-  orderNumber: string;
-  dateTime: string;
-  comments: string;
-  product: ProductSave;
-  trackingCode: string;
-  claimReasons: string;
-  shippingMethod: string;
-  status: string;
-  solutionType: string;
-  createdBy: string;
-  isClosed: boolean;
-  updateHistory: UpdateHistory[];
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
-  __v: number;
-};
-
 export type Variant = {
   name: { es: string };
   id: string;
@@ -95,27 +76,54 @@ export interface ProductReceipt {
   variants: Variant[];
   id: string;
 }
+export type Claim = {
+  _id: string;
+  orderNumber: string;
+  dateTime: string;
+  comments: string;
+  products: FormProduct[];
+  trackingCode: string;
+  shippingMethod: string;
+  status: string;
+  createdBy: string;
+  isClosed: boolean;
+  updateHistory: UpdateHistory[];
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  __v: number;
+};
 
 export interface FormTypes {
   initialData: Claim;
-  onSubmit: (data: FormValues) => void;
-  markAsResolved: () => void;
+  onSubmit: (data: FormValues, event: any) => void;
   loading: boolean;
   form: UseFormReturn<FormValues>;
   handleSubmit: any;
 }
+
 export type FormValues = {
-  products: {
-    product: ProductSave;
-    variant: Variant;
-    quantity: number;
-  }[];
+  products: FormProduct[];
   orderNumber: string | number;
   claimReasons: string;
   comments: string;
-  shippingMethod: string;
   status: string;
   trackingCode: string | number;
   solutionType: string | null;
   shippingCost: string;
+};
+
+type Solution = {
+  type: string;
+  productToChange?: {
+    product?: ProductSave;
+    variant?: Variant;
+    Quantity?: number;
+  };
+};
+type FormProduct = {
+  solution: Solution;
+  product: ProductSave;
+  variant: Variant;
+  quantity: number;
+  shippingMethod: string;
 };

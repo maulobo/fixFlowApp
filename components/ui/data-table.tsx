@@ -7,7 +7,7 @@ import {
   getFilteredRowModel,
   useReactTable
 } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -20,6 +20,7 @@ import { Input } from './input';
 import { Button } from './button';
 import { ScrollArea, ScrollBar } from './scroll-area';
 import { Claim } from '@/types/types-mine';
+import { useRouter } from 'next/navigation';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -47,32 +48,24 @@ export function DataTable<TData, TValue>({
     // Asignamos el nuevo valor al campo `dateTime`
     complaint.createdAt = formattedDate;
   });
-
-  const [showDestacados, setShowDestacados] = useState(false);
-
+  const router = useRouter();
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel()
   });
-
-  const handleToggleDestacados = () => {
-    setShowDestacados(!showDestacados);
-
-    // Aplicar o remover el filtro para la columna "destacado"
-    table
-      .getColumn('destacado')
-      ?.setFilterValue(showDestacados ? undefined : true);
-  };
+  useEffect(() => {
+    router.refresh();
+  }, []);
 
   return (
     <>
-      <Button variant="default" size="sm" onClick={handleToggleDestacados}>
-        {showDestacados ? 'Mostrar Todos' : 'Mostrar Destacados'}
+      <Button variant="default" size="sm" onClick={() => router.refresh()}>
+        Actualizar cambios
       </Button>
       <Input
-        placeholder={`Buscar Numero de Orden...`}
+        placeholder={`Buscar Por Numero de Orden...`}
         value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
         onChange={(event) =>
           table.getColumn(searchKey)?.setFilterValue(event.target.value)
