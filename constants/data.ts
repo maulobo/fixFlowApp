@@ -181,3 +181,4 @@ const getTenantBaseUrl = () => {
 };
 
 export const URL = 'http://localhost:3000';
+export const URLNODE = 'http://localhost:5001';

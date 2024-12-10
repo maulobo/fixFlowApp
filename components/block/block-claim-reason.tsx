@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Bar, BarChart, LabelList, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { ChartContainer } from '@/components/ui/chart';
@@ -8,38 +7,32 @@ import { Separator } from '@/components/ui/separator';
 import { BASE_URL } from '@/constants/data';
 import { useFetchDataMine } from '@/hooks/useFetchMain';
 import { useSession } from 'next-auth/react';
+import { ClaimReasonData } from '@/app/dashboard/reclamos/components/tabs/tab-main';
 
-interface ClaimReasonData {
-  _id: string;
-  count: number;
-}
-
-const colorMap: { [key: string]: string } = {
-  'Error empaquetado': 'hsl(var(--chart-1))',
-  Devolucion: 'hsl(var(--chart-6))',
-  'Cambio despacho': 'hsl(var(--chart-2))',
-  'Error Logistica': 'hsl(var(--chart-3))',
-  Otro: 'hsl(var(--chart-4))',
-  Garantia: 'hsl(var(--chart-5))',
-  'Sin stock': 'hsl(var(--chart-7))',
-  Retorno: 'hsl(var(--chart-8))'
+type ClaimReasonProps = {
+  claimReasonData: ClaimReasonData[];
 };
 
-type Data = {};
+const availableColors = [
+  'hsl(var(--chart-1))',
+  'hsl(var(--chart-2))',
+  'hsl(var(--chart-3))',
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))',
+  'hsl(var(--chart-6))',
+  'hsl(var(--chart-7))',
+  'hsl(var(--chart-8))'
+];
 
-export default function ClaimReason() {
+export default function ClaimReason({ claimReasonData }: ClaimReasonProps) {
   const session = useSession();
+  const generatedColorMap: { [key: string]: string } = {};
 
-  const [data, setData] = useState<ClaimReasonData[]>([]);
-
-  useEffect(() => {
-    const asyncRecipt = async () => {
-      const result = await useFetchDataMine(session.data?.sessionToken);
-      const dataClaim = result.countClaimReason.slice(0, 4);
-      setData(dataClaim);
-    };
-    asyncRecipt();
-  }, []);
+  claimReasonData.forEach((item, index) => {
+    generatedColorMap[item._id] =
+      availableColors[index % availableColors.length];
+  });
+  console.log(generatedColorMap);
 
   return (
     <Card className="">
@@ -84,9 +77,9 @@ export default function ClaimReason() {
               top: 0,
               bottom: 10
             }}
-            data={data.map((item) => ({
+            data={claimReasonData.map((item) => ({
               count: item.count,
-              fill: colorMap[item._id] || 'gray'
+              fill: generatedColorMap[item._id] || 'gray'
             }))}
             layout="vertical"
             barSize={32}
@@ -115,7 +108,7 @@ export default function ClaimReason() {
       </CardContent>
       <CardFooter className="flex flex-row border-t p-4">
         <div className="flex w-full items-center gap-2">
-          {data.map((item) => (
+          {claimReasonData.map((item) => (
             <div key={item._id} className="grid flex-1 auto-rows-min gap-0.5">
               <div className="text-xs text-muted-foreground">{item._id}</div>
               <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">

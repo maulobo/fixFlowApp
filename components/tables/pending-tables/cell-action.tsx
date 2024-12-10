@@ -56,7 +56,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         console.log('spotlight');
         await updateProductSpotlight(data._id, false);
       }
-      console.log('resfrescando');
+
       router.refresh();
     } catch (error) {
       console.error('Error during action:', error);

@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import { BASE_URL } from '@/constants/data';
-import { Claim, SolutionType } from '@/types/types-mine';
+import { Claim, Claimreason, SolutionType } from '@/types/types-mine';
 import { ProductNube } from '@/types/types-tienda-nube';
 
 // const url = 'https://api.tiendanube.com/v1/965651/products?limit=20';
@@ -8,7 +8,6 @@ import { ProductNube } from '@/types/types-tienda-nube';
 export const fetchData = async (url: string) => {
   const session = await auth();
   const token = session?.sessionToken;
-  console.log(url);
   try {
     const res = await fetch(`${process.env.BASE_URL}/${url}`, {
       method: 'GET',
@@ -26,6 +25,7 @@ export const fetchData = async (url: string) => {
     return error;
   }
 };
+
 export const fetchPending = async (url: string) => {
   const session = await auth();
   const token = session?.sessionToken;
@@ -47,7 +47,7 @@ export const fetchPending = async (url: string) => {
     return error;
   }
 };
-// este creo que deberia esta en hooks
+
 export const fetchDataClient = async (url: string) => {
   try {
     const res = await fetch(`${BASE_URL}/${url}`, {
@@ -141,24 +141,24 @@ export const fetchClaimsById = async (productId: any) => {
 
 export const getSolutionsTypes = async (): Promise<SolutionType[]> => {
   return [
-    { value: 'Sin Stock', label: 'sin-stock' },
-    { value: 'Garantia', label: 'garantia' },
-    { value: 'Cambio Previo al Envio', label: 'cambio-previo' },
-    { value: 'Error empaquetado', label: 'error-empaquetado' },
-    { value: 'Retorno', label: 'retorno' },
-    { value: 'Cambio de Producto', label: 'cambio-producto' },
-    { value: 'Otro', label: 'otro' }
+    { value: 'Reenvio', label: 'Reenvio' },
+    { value: 'Cupon', label: 'Cupon' },
+    { value: 'Devolucion de compra', label: 'Devolucion de compra' },
+    { value: 'Regalo', label: 'regalo' },
+    { value: 'Cambio de producto', label: 'Cambio de producto' },
+    { value: 'Logistica inversa', label: 'Logistica inversa' }
   ];
 };
-export const getClaimReason = async (): Promise<SolutionType[]> => {
+
+export const getClaimReason = async (): Promise<Claimreason[]> => {
   return [
-    { value: 'Sin Solucion', label: 'sin_solucion' },
-    { value: 'Reenvio', label: 'Reenvio' },
-    { value: 'Cupon', label: 'cupon' },
-    { value: 'Devolucion', label: 'devolucion' },
-    { value: 'Regalo', label: 'regalo' },
-    { value: 'Cambio de producto', label: 'cambio_de_producto' },
-    { value: 'Logistica inversa', label: 'logistica_inversa' }
+    { value: 'Garantia', label: 'Garantia' },
+    { value: 'Sin stock', label: 'Sin stock' },
+    { value: 'Devolucion', label: 'Devolucion' },
+    { value: 'Error logistica', label: 'Error logistica' },
+    { value: 'Cambio previo al envio', label: 'Cambio previo al envio' },
+    { value: 'Error empaquetado', label: 'Error empaquetado' },
+    { value: 'Otro', label: 'Otro' }
   ];
 };
 
@@ -187,5 +187,26 @@ export const getImagesBack = async (
   } catch (err: unknown) {
     console.error('Error fetching images:', err);
     return err;
+  }
+};
+
+export const getUser = async () => {
+  const session = await auth();
+  const token = session?.sessionToken;
+  try {
+    const response = await fetch(`${BASE_URL}/complaints/getUser}`, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    const res = await response.json();
+    if (res.success === false) return;
+
+    return res;
+  } catch (error) {
+    console.error('Error fetching complaint data:', error);
   }
 };

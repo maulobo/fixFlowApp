@@ -13,6 +13,8 @@ export default async function TabWeek() {
   const startDate = new Date(date);
   startDate.setDate(date.getDate() - 7);
 
+  console.log('DATA WEEK');
+
   const data = await fetchData(
     `dashboard-data/?startDate=${startDate}&endDate=${endDate}`
   );
@@ -134,7 +136,7 @@ export default async function TabWeek() {
       {/* motivo del error y three circle */}
       <div className="grid grid-cols-4 gap-4 md:grid-rows-4">
         <div className="col-span-4 md:col-span-3 md:row-span-4">
-          <ClaimReason />
+          <ClaimReason claimReasonData={claimReasonData} />
         </div>
         <div className="col-span-4 md:col-span-1 md:row-span-4">
           <Card>

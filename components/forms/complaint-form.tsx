@@ -15,12 +15,8 @@ import FileUpload from '../file-upload';
 import { formSchema } from './formUtils';
 import { BASE_URL } from '@/constants/data';
 import { AlertModal } from '../modal/alert-modal';
-
-import { ClaimForm, MyForm } from './form-generated';
-import { useGetProducts } from '@/hooks/useFetchMain';
 import { FormTest } from './form-test';
 import { Claim, FormValues, Variant } from '@/types/types-mine';
-import { revalidatePath } from 'next/cache';
 
 export const IMG_MAX_LIMIT = 3;
 
@@ -52,6 +48,13 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
               name: '',
               id: ''
             },
+            variant: {
+              name: { es: '' },
+              id: '',
+              price: '',
+              product_id: '',
+              sku: ''
+            },
             solution: {
               type: '',
               productToChange: {
@@ -67,33 +70,25 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
               }
             },
             shippingMethod: '',
-            quantity: 0,
-            variant: {
-              name: {
-                es: ''
-              },
-              id: '',
-              price: '',
-              product_id: '',
-              sku: ''
-            } as Variant
+            quantity: 0
           }
         ],
         orderNumber: '',
         comments: '',
-        shippingMethod: undefined,
         status: '',
         trackingCode: undefined,
         shippingCost: undefined
       };
 
   const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues
   });
 
   console.log('Errores del formulario:', form.formState.errors);
 
   const onSubmit = async (data: FormValues, event: any) => {
+    console.log(data);
     const submitter = event.nativeEvent.submitter as any;
     const buttonAction = submitter.name;
 
@@ -192,9 +187,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     }
   }, [initialData, form.reset]);
 
-  // Observa los valores del formulario
-  const watchedProducts = form.watch('products');
-
   return (
     <>
       <AlertModal
@@ -217,15 +209,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
         )}
       </div>
       <Separator />
-
-      {/* <MyForm
-        onSubmit={onSubmit}
-        initialData={initialData}
-        markAsResolved={markAsResolved}
-        handleSubmit={handleSubmit}
-        loading={loading}
-        form={form}
-      /> */}
       <FormTest
         onSubmit={onSubmit}
         initialData={initialData}

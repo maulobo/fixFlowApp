@@ -18,7 +18,6 @@ export default async function Page({
     }
   ];
   const { id } = searchParams;
-  console.log(searchParams);
 
   let initialData = null;
   let history = null;

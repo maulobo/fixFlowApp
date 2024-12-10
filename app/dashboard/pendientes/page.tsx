@@ -1,6 +1,6 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import PageContainer from '@/components/layout/page-container';
-import { PendingComplaints } from '@/components/tables/user-tables/client';
+import { PendingComplaints } from '@/components/tables/pending-tables/client';
 import { fetchData, fetchPending } from '@/lib/actions';
 import { ChartData } from '@/types/types-mine';
 

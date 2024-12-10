@@ -11,20 +11,33 @@ type FormItemInputType = {
   field: any;
   description: string;
   label: string;
+  type?: string;
 };
 
 export const FormItemInput = ({
   field,
   description,
-  label
+  label,
+  type = 'text'
 }: FormItemInputType) => {
   return (
     <FormItem>
       <FormLabel>{label}</FormLabel>
       <FormControl>
-        <Input type="text" placeholder="Ejemplo: 12345" {...field} />
+        <Input
+          type={type}
+          placeholder=""
+          {...field}
+          onChange={(e) => {
+            const value =
+              type === 'number'
+                ? parseFloat(e.target.value) || undefined
+                : e.target.value;
+            field.onChange(value);
+          }}
+        />
       </FormControl>
-      <FormDescription>{description}</FormDescription>
+      {description && <FormDescription>{description}</FormDescription>}
       <FormMessage />
     </FormItem>
   );

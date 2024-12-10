@@ -34,7 +34,7 @@ export function DataTable<TData, TValue>({
   searchKey
 }: DataTableProps<TData, TValue>) {
   data.forEach((complaint: any) => {
-    const date = new Date(complaint.dateTime);
+    const date = new Date(complaint.createdAt);
 
     // Formateamos la fecha en el formato deseado "DD-MM-YY HH:mm:ss"
     const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(

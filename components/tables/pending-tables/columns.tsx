@@ -30,10 +30,6 @@ export const columns: ColumnDef<Claim>[] = [
     header: 'N ORDEN'
   },
   {
-    accessorKey: 'product',
-    header: 'PRODUCTO'
-  },
-  {
     accessorKey: 'claimReasons',
     header: 'TIPO DE ERROR'
   },
@@ -42,16 +38,12 @@ export const columns: ColumnDef<Claim>[] = [
     header: 'STATUS'
   },
   {
-    accessorKey: 'solutionType',
+    accessorKey: 'createdBy',
     header: 'SOLUCION'
   },
   {
     accessorKey: 'createdAt',
     header: 'FECHA CREACION'
-  },
-  {
-    accessorKey: 'trackingCode',
-    header: 'TRACKING CODE'
   },
   {
     id: 'actions',

@@ -12,7 +12,6 @@ import TabSet from './reclamos/components/tabs/tab-set';
 import TabMain from './reclamos/components/tabs/tab-main';
 
 import AddnewButon from '@/components/addnew';
-// import { Button } from '@/components/ui/button';
 
 export default async function page({
   searchParams
@@ -32,22 +31,21 @@ export default async function page({
         </div>
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList className="">
-            <TabsTrigger value="overview">main</TabsTrigger>
-            <TabsTrigger value="month">month</TabsTrigger>
+            <TabsTrigger value="overview">Principal</TabsTrigger>
+            <TabsTrigger value="month">Mes</TabsTrigger>
             <TabsTrigger value="week">Semana</TabsTrigger>
             <TabsTrigger value="day">Dia</TabsTrigger>
             <TabsTrigger className="hidden md:block" value="set">
               Rango de fechas
             </TabsTrigger>
-
             <CalendarDateRangePicker className="hidden md:block" />
           </TabsList>
-
           <TabMain />
           <TabMonth />
+          {/* <TabMonth />
           <TabWeek />
           <TabDay />
-          <TabSet searchParams={searchParams} />
+          <TabSet searchParams={searchParams} /> */}
         </Tabs>
       </div>
     </PageContainer>

@@ -3,9 +3,6 @@
 import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-
-import { Plus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { columns } from './columns';
 import { Claim } from '@/types/types-mine';
 

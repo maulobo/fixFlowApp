@@ -21,20 +21,42 @@ export const updateHistorySchema = z.object({
 });
 
 export const formSchema = z.object({
-  orderNumber: z.any(),
-  claimReasons: z.string().min(1).max(255),
-  comments: z.string().min(1).max(255),
+  orderNumber: z.string().or(z.number()),
+  claimReasons: z
+    .string()
+    .min(1, 'Debe tener al menos un carácter')
+    .max(255, 'Máximo 255 caracteres'),
+  comments: z.string().optional(),
   products: z
     .array(
       z.object({
-        product: z.string(),
-        variant: z.any() // Puedes ajustar esto si sabes la estructura de Variant
+        product: z.object({
+          name: z.string().min(1, 'debe ser auque sea un producto')
+        }),
+        variant: z.object({
+          id: z.any(),
+          price: z.string(),
+          sku: z.any(),
+          values: z.any(),
+          product_id: z.any(),
+          stock: z.number()
+        }),
+        quantity: z.number().min(1, 'La cantidad debe ser al menos 1.'),
+        solution: z.object({
+          type: z.string(),
+          productToChange: z
+            .object({
+              product: z.object({ name: z.string() }).optional(),
+              variant: z.object({ sku: z.string() }).optional()
+            })
+            .optional()
+        }),
+        shippingMethod: z.string().optional()
       })
     )
-    .default([]),
-  shippingMethod: z.string().min(1).max(255).optional(),
-  status: z.string(),
-  trackingCode: z.string().optional(),
-  solutionType: z.string().optional(),
-  shippingCost: z.string().optional()
+    .nonempty('Debe añadir al menos un producto.'),
+  shippingMethod: z.string().optional(),
+  status: z.string().min(1, 'El estado es obligatorio'),
+  trackingCode: z.string().or(z.number()).optional(),
+  shippingCost: z.number().optional()
 });

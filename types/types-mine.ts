@@ -44,6 +44,12 @@ export type Variant = {
   price: string;
   product_id: string;
   sku: string;
+  stock: number;
+  values: [
+    {
+      es: string;
+    }
+  ];
 };
 export type ProductSave = {
   name: string;
@@ -76,8 +82,14 @@ export interface ProductReceipt {
   variants: Variant[];
   id: string;
 }
-export type Claim = {
+export type Claimreason = {
+  value: string;
+  label: string;
+};
+
+export interface Claim {
   _id: string;
+  claimReasons: string;
   orderNumber: string;
   dateTime: string;
   comments: string;
@@ -91,7 +103,7 @@ export type Claim = {
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   __v: number;
-};
+}
 
 export interface FormTypes {
   initialData: Claim;
@@ -109,7 +121,8 @@ export type FormValues = {
   status: string;
   trackingCode: string | number;
   solutionType: string | null;
-  shippingCost: string;
+  shippingCost: number;
+  isClosed: boolean;
 };
 
 type Solution = {

@@ -1,12 +1,14 @@
 'use client';
-import { BASE_URL } from '@/constants/data';
+import { BASE_URL, URL } from '@/constants/data';
+import { DataStructure } from '@/types/types-dashboard';
 import { ProductNube } from '@/types/types-tienda-nube';
+import { IconChessKing } from '@tabler/icons-react';
 import { Session } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
-interface UseFetchDataResult<T> {
-  data: T | null;
+interface UseFetchDataResult {
+  data: DataStructure | null;
   loading: boolean;
   error: string | null;
 }
@@ -27,15 +29,25 @@ export const useFetchDataMine = async (token: string | null | undefined) => {
   }
 };
 
-export function useFetchData<T>(url: string): UseFetchDataResult<T> {
-  const [data, setData] = useState<T | null>(null);
+export const useFetchData = (url: string): UseFetchDataResult => {
+  const [data, setData] = useState<null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const { data: session } = useSession();
+
+  console.log(data);
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (url: string) => {
       try {
-        const response = await fetch(url);
+        const response = await fetch(`${BASE_URL}/${url}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.sessionToken}` // Incluye el token en los encabezados
+          }
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -48,11 +60,11 @@ export function useFetchData<T>(url: string): UseFetchDataResult<T> {
       }
     };
 
-    fetchData();
+    fetchData(url);
   }, [url]);
 
   return { data, loading, error };
-}
+};
 
 export const useDeleteById = async (productId: any, token: any) => {
   try {
@@ -90,7 +102,8 @@ export const useGetProducts = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
-          }
+          },
+          cache: 'default'
         });
         const proddd = await res.json();
 

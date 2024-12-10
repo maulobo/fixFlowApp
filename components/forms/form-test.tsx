@@ -31,32 +31,22 @@ import {
   Variant
 } from '@/types/types-mine';
 import { useGetProducts } from '@/hooks/useFetchMain';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '../ui/select';
 import { Input } from '../ui/input';
 import { DrawerDemo } from '../drawer';
 import { getClaimReason, getSolutionsTypes } from '@/lib/actions';
 import { FormItemInput } from './components/form-item-input';
-import { FormSelect } from './components/form-select';
+import { FormSelectMine } from './components/form-select';
 
 const status = [
   { label: 'Hablado', value: 'Hablado' },
   { label: 'No Hablado', value: 'No Hablado' },
-  { label: 'Empaquetado', value: 'Empaquetado' }
+  { label: 'Pendiente', value: 'Pendiente' },
+  { label: 'Resuelto', value: 'Resuelto' },
+  { label: 'Empaquetado', value: 'Empaquetado' },
+  { label: 'Cancelado', value: 'Cancelado' }
 ];
 
-export function FormTest({
-  initialData,
-  // onSubmit,
-  handleSubmit,
-  loading,
-  form
-}: FormTypes) {
+export function FormTest({ initialData, form, onSubmit }: FormTypes) {
   const { productsReceipt, loading1 } = useGetProducts();
   const products: ProductReceipt[] = productsReceipt.filteredProducts;
   const [selectedProducts, setSelectedProducts] = useState<
@@ -71,7 +61,6 @@ export function FormTest({
 
   const buton = initialData ? 'Editar' : 'Crear';
 
-  console.log(form.getValues());
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'products'
@@ -116,11 +105,12 @@ export function FormTest({
 
   const getVariantsForProduct = (index: number) => {
     const selectedProduct = selectedProducts[index];
+
     return selectedProduct
       ? selectedProduct.variants.map((variant) => ({
-          label: `SKU: ${variant.sku}, Nombre: ${
-            variant.name ? variant.name.es : 'sin Nombre'
-          }`,
+          label: `SKU: ${variant.sku} Variante: ${
+            variant.sku ? variant.values.map((e) => e.es) : 'Sin Nombre'
+          } , Precio: $${variant.price}, Stock ${variant.stock}`,
           value: variant
         }))
       : [];
@@ -144,9 +134,9 @@ export function FormTest({
     form.setValue(`products.${index}.solution.productToChange.Quantity`, 1);
   };
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
+  // const onSubmit = (data: any) => {
+  //   console.log(data);
+  // };
 
   return (
     <Form {...form}>
@@ -156,7 +146,7 @@ export function FormTest({
           control={form.control}
           name="claimReasons"
           render={({ field }) => (
-            <FormSelect
+            <FormSelectMine
               field={field}
               selectOption={claimReasons}
               label="Tipo de error"
@@ -174,6 +164,7 @@ export function FormTest({
               field={field}
               description="Indique numero de orden"
               label="Numero de Orden"
+              type="number"
             />
           )}
         />
@@ -268,7 +259,9 @@ export function FormTest({
                               {`SKU: ${
                                 fieldProps.value?.sku || 'N/A'
                               }  |  Nombre: ${
-                                fieldProps.value?.name?.es || 'Sin nombre'
+                                (fieldProps.value?.values
+                                  ? fieldProps.value?.values[0]?.es
+                                  : '') || 'Sin Nombre'
                               }` || 'Seleccionar variante'}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
@@ -322,7 +315,7 @@ export function FormTest({
                   control={form.control}
                   name={`products.${index}.solution.type`}
                   render={({ field }) => (
-                    <FormSelect
+                    <FormSelectMine
                       field={field}
                       selectOption={solutions}
                       label="Tipo de Solucion"
@@ -356,7 +349,7 @@ export function FormTest({
                 )}
 
                 {form.watch(`products.${index}.solution.type`) ===
-                'cambio-producto' ? (
+                'Cambio de producto' ? (
                   <>
                     <FormField
                       control={form.control}
@@ -488,8 +481,8 @@ export function FormTest({
                   render={({ field }) => (
                     <FormItemInput
                       field={field}
-                      description="Ingrese el costo del envio"
-                      label="Costo de envio"
+                      description="Ingrese el metodo de envio"
+                      label="Metodo de envio"
                     />
                   )}
                 />
@@ -545,20 +538,25 @@ export function FormTest({
           control={form.control}
           name="comments"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Comentarios</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Escribe tus comentarios aquí"
-                  {...field}
-                  className="w-full rounded-md border p-2"
-                />
-              </FormControl>
-              <FormDescription>
-                Incluye cualquier detalle adicional
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
+            <FormItemInput
+              field={field}
+              description="Agregue cualquier comentario adicional"
+              label="Comentarios"
+            />
+          )}
+        />
+
+        {/* costo de envio */}
+        <FormField
+          control={form.control}
+          name="shippingCost"
+          render={({ field }) => (
+            <FormItemInput
+              field={field}
+              description="Ingrese el costo de envio"
+              label="Costo de Envio"
+              type="number"
+            />
           )}
         />
         {/* Estado */}
@@ -566,28 +564,12 @@ export function FormTest({
           control={form.control}
           name="status"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Estado</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={initialData?.status || field.value || ''}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Indique estado del reclamo" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {status.map((item, i) => (
-                    <SelectItem value={item.value} key={`${item.value}_${i}`}>
-                      {item.value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>Estado del reclamo...</FormDescription>
-              <FormMessage />
-            </FormItem>
+            <FormSelectMine
+              field={field}
+              selectOption={status}
+              description="Seleccione el estado en el que se encuentra el reclamo"
+              label="Estado"
+            />
           )}
         />
 
@@ -599,17 +581,16 @@ export function FormTest({
         >
           {buton}
         </Button>
-        {initialData ? (
-          <Button
-            name="solved"
-            variant={'solved'}
-            className="w-full"
-            type="submit"
-            disabled={loading1}
-          >
-            Marcar Como resuelto
-          </Button>
-        ) : null}
+
+        <Button
+          name="solved"
+          variant={'solved'}
+          className="w-full"
+          type="submit"
+          disabled={loading1}
+        >
+          Marcar Como resuelto
+        </Button>
       </form>
     </Form>
   );

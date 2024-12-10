@@ -25,7 +25,7 @@ interface ForMSelectMine {
   description: string;
 }
 
-export const FormSelect = ({
+export const FormSelectMine = ({
   label,
   field,
   selectOption,
@@ -37,7 +37,7 @@ export const FormSelect = ({
       <Select onValueChange={field.onChange}>
         <FormControl>
           <SelectTrigger>
-            <SelectValue placeholder="Seleccione el tipo de error" />
+            <SelectValue placeholder="Seleccione" />
           </SelectTrigger>
         </FormControl>
         <SelectContent>
